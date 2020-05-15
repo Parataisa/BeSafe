@@ -1,12 +1,9 @@
 package theMain;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,9 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import theMain.PasswordControll;
-
-public class TheInterface extends PasswordControll implements ActionListener
+public class TheInterface extends UserData implements ActionListener
 {
 	private JPanel panel;
 	private JFrame frame;
@@ -47,7 +42,6 @@ public class TheInterface extends PasswordControll implements ActionListener
 		frame.setVisible(true);
 	}
 	
-	
  public static void main(String[] args) 
  {
 	new TheInterface();
@@ -55,21 +49,9 @@ public class TheInterface extends PasswordControll implements ActionListener
  @Override
  public void actionPerformed(ActionEvent e)
  {
-	List testList = null;
-	try {
-		testList = GetUserData(userPassword.getText(), userName.getText());
-	} catch (NoSuchAlgorithmException e2) {
-		e2.printStackTrace();
-	}
-	try {
-		String testUserNameString = testList.getItem(2).toString()+".txt";
-		PrintWriter writer = new PrintWriter(testUserNameString, "UTF-8");
-		writer.append(testList.getItem(0));
-		writer.println();
-		writer.append(testList.getItem(1));
-		writer.close();
-	} catch (Exception e1) {
-		e1.printStackTrace();
-	}
+	 saveUserData(userPassword.getText(), userName.getText());
  }
+
+
+
 }
