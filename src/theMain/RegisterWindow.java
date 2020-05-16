@@ -1,6 +1,8 @@
 package theMain;
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -10,14 +12,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-public class RegisterWindow {
+public class RegisterWindow extends UserData{
 	private JPanel panel;
 	private JFrame frame;
 	private JTextField userName;
 	private JTextField userPassword;
 	private JTextField userConfPassword;
-	private JButton registerUserBt;
-	private JButton cancelBt;
+	public JButton registerUserBt;
+	public JButton cancelBt;
 	private JLabel userNameJLabel;
 	private JLabel userPasswordJLabel;
 	private JLabel userPasswordConfJLabel;
@@ -76,6 +78,39 @@ public class RegisterWindow {
 		ImageIcon icon = new ImageIcon(iconUrl);
 		frame.setIconImage(icon.getImage());
 		frame.setVisible(true);
+		cancelBt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {			
+				frame.dispose();
+			}
+		});
+		registerUserBt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String userPasswordString = getUserPassword().getText();
+				String userConfPasswordString = getUserConfPassword().getText();
+				String userNameString = getUserName().getText();
+				if (userNameString.isEmpty()) {
+					System.out.println("Please enter a Username.");
+				}
+				else if (userPasswordString.isEmpty() || userConfPasswordString.isEmpty()) {
+					System.out.println("Please enter a Password");
+				}
+				else if((userPasswordString.equals(userConfPasswordString)) == false){
+					System.out.println("The Passwords doesn't match!");
+				}
+				else if (userPasswordString.equals(userConfPasswordString)) {
+					saveUserData(getUserPassword().getText(),getUserName().getText());
+					frame.dispose();					
+				}
+				else {
+					System.out.println("Something went wrong!");
+				}
+			}
+		});
+			
 	}
 
 	private JTextField getUserName() {
