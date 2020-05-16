@@ -1,53 +1,32 @@
 package theMain;
-import java.awt.List;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-public class PasswordControll {
-	public String gehashedesPasswordString;
+public class PasswordControll extends UserDataClass{
 	
-	public String userPasswordString;
-	private String getUserPasswordString() {
-		return userPasswordString;
-	}
-	public void setUserPasswordString(String userPasswordString) {
-		this.userPasswordString = userPasswordString;
-	}
-	
-	
-	public String userNameString;
-	private String getUserNameString() {
-		return userNameString;
-	}
-	public void setUserNameString(String userNameString) {
-		this.userNameString = userNameString;
-	}
-	
+	UserDataClass userDataSet = new UserDataClass();
 
-	public List GetUserData(String userPassword, String userName) throws NoSuchAlgorithmException 
+	public void getUserDataForProcessingList(String userPassword, String userName) throws NoSuchAlgorithmException 
 	{
-		setUserPasswordString(userPassword);
-		setUserNameString(userName);
-		return passwordHashing();
+		userDataSet.setUserPasswordString(userPassword);
+		userDataSet.setUserNameString(userName);
+		passwordHashing();
 	}
-	
-	
-	private List passwordHashing() throws NoSuchAlgorithmException {
-		String userPassword = getUserPasswordString();
-		String userNameString = getUserNameString();
+	private UserData passwordHashing() throws NoSuchAlgorithmException {
+		String userPassword = userDataSet.getUserPasswordString();
+		String userNameString = userDataSet.getUserNameString();
 		byte[] salt = getSalt();
 		String sPassword = getSecurePassword(userPassword, salt);
-		List PwList = new List();
-		PwList.add(sPassword);
-		PwList.add(salt.toString());
-		PwList.add(userNameString);
-		return PwList;
+		UserData newUserData = new UserData();
+		userDataSet.setUserNameString(userNameString);
+		userDataSet.setUserPasswordString(sPassword);
+		userDataSet.setUserSaltByte(salt);
+		return newUserData;
 		}
-	
-	
-	
-	private String getSecurePassword(String userPassword, byte[] salt) {
+		
+	public static String getSecurePassword(String userPassword, byte[] salt) {
 		String hashedPasswordString = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -66,7 +45,6 @@ public class PasswordControll {
         }
         return hashedPasswordString;
 	}
-
 	private static byte[] getSalt() throws NoSuchAlgorithmException
 	{
 	    SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
@@ -74,5 +52,6 @@ public class PasswordControll {
 	    sr.nextBytes(salt);
 	    return salt;
 	}
-	
+			
 }
+

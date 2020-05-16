@@ -112,30 +112,14 @@ public class RegisterWindow extends UserData{
 		});
 			
 	}
-
 	private JTextField getUserName() {
 		return userName;
 	}
-
-	private void setUserName(JTextField userName) {
-		this.userName = userName;
-	}
-
 	private JTextField getUserPassword() {
 		return userPassword;
 	}
-
-	private void setUserPassword(JTextField userPassword) {
-		this.userPassword = userPassword;
-	}
-
 	private JTextField getUserConfPassword() {
 		return userConfPassword;
 	}
-
-	private void setUserConfPassword(JTextField userConfPassword) {
-		this.userConfPassword = userConfPassword;
-	}	
-
 }
 
