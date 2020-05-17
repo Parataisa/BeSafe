@@ -74,7 +74,7 @@ public class TheInterface extends UserDataClass implements ActionListener {
 		 	tempUserDataClass.setUserPasswordString(userPassword.getText());
 		 	UserData tempData = new UserData();
 			try {
-				tempData.CheckUserData(tempUserDataClass.getUserNameString(), tempUserDataClass.getPassworSaltString());
+				tempData.CheckUserData(tempUserDataClass.getUserNameString(), tempUserDataClass.getUserPasswordString());
 			} catch (URISyntaxException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

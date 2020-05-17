@@ -26,6 +26,7 @@ public class PasswordControll extends UserDataClass{
 		return newUserData;
 		}
 		
+	
 	public static String getSecurePassword(String userPassword, byte[] salt) {
 		String hashedPasswordString = "";
         try {
@@ -45,6 +46,8 @@ public class PasswordControll extends UserDataClass{
         }
         return hashedPasswordString;
 	}
+	
+	
 	private static byte[] getSalt() throws NoSuchAlgorithmException
 	{
 	    SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");

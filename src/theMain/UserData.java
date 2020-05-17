@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 
+import javafx.scene.shape.Line;
+
 
 public class UserData extends PasswordControll {
 
@@ -23,13 +25,14 @@ public class UserData extends PasswordControll {
 				 new File(userNameString).mkdir();
 				 String userPasswordString = userDataSet.getUserPasswordString();
 				 byte[] userSalt = userDataSet.getUserSaltByte();
+				 PrintWriter saltWriter = new PrintWriter(userNameString + "/salt.txt");
+				 for (byte b : userSalt) {
+					saltWriter.println(b);
+					}
+				 saltWriter.close();
 				 PrintWriter writer = new PrintWriter(userNameString + "/data.txt");	 
 				 writer.append(userPasswordString);
 				 writer.close();
-				 try (FileOutputStream fos = new FileOutputStream(userNameString + "/salt.txt")) {
-					   fos.write(userSalt);
-					   fos.close();
-				 }
 			}
 		} catch (Exception e1) {
 			
@@ -48,9 +51,8 @@ public class UserData extends PasswordControll {
 			else if (file.exists()) {
 				List userList = saltGettingMethode(userName);
 				String savedUserPasswordString = userList.getItem(0);
-				String savedSaltString = userList.getItem(1);
 				byte[] savedSalt = new byte[16];
-				savedSalt =	(savedSaltString.getBytes());
+				savedSalt =	userDataSet.getUserSaltByte();
 				
 				String checkUserPasswordString = getSecurePassword(userPassword, savedSalt);
 				if (checkUserPasswordString.equals(savedUserPasswordString))
@@ -79,14 +81,15 @@ public class UserData extends PasswordControll {
 				Scanner scanner = new Scanner(file);
 				lines.add(scanner.nextLine(), 0);
 				scanner.close();
-				byte[] userSaltbyte = new byte[(int)fileS.length()];
-				FileInputStream fileInputStream = new FileInputStream(fileS);
-				fileInputStream.read(userSaltbyte);
-				fileInputStream.close();
-				lines.add(userSaltbyte.toString());
-				userDataSet.setUserSaltByte(userSaltbyte);
+				Scanner saltScanner = new Scanner(fileS);
+				byte[] scannedSalt = new byte[16];
+				for (int i = 0; i < scannedSalt.length; i++) {
+					scannedSalt[i] = saltScanner.nextByte();
+				}
+				saltScanner.close();
+				userDataSet.setUserSaltByte(scannedSalt);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 			return lines;
