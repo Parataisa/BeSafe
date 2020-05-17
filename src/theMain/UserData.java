@@ -1,15 +1,11 @@
 package theMain;
 import java.awt.List;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.Scanner;
-
-import javafx.scene.shape.Line;
 
 
 public class UserData extends PasswordControll {

@@ -1,5 +1,7 @@
 package theMain;
 
+import com.sun.org.apache.xerces.internal.xs.StringList;
+
 public class UserDataClass {
 	public String userNameString = "";
 	public String userPasswordString = "";
@@ -7,10 +9,62 @@ public class UserDataClass {
 	public String passworSaltString = "";
 	public byte[] userSaltByte;
 	public boolean login;
+	public String[] testArrayStrings;
+	/**
+	 * @return the testArrayStrings
+	 */
+	public String[] getTestArrayStrings() {
+		return testArrayStrings;
+	}
+	/**
+	 * @param testArrayStrings the testArrayStrings to set
+	 */
+	public void setTestArrayStrings(String[] testArrayStrings) {
+		this.testArrayStrings = testArrayStrings;
+	}
+	public StringList userSavedAccountSiteStringList;
+	public StringList userSavedAccountStringList;
+	public StringList userSavedAccountPasswordStringList;
 	
 	
 	
 	
+	/**
+	 * @return the userSavedAccountSiteStringList
+	 */
+	public StringList getUserSavedAccountSiteStringList() {
+		return userSavedAccountSiteStringList;
+	}
+	/**
+	 * @param userSavedAccountSiteStringList the userSavedAccountSiteStringList to set
+	 */
+	public void setUserSavedAccountSiteStringList(StringList userSavedAccountSiteStringList) {
+		this.userSavedAccountSiteStringList = userSavedAccountSiteStringList;
+	}
+	/**
+	 * @return the userSavedAccountStringList
+	 */
+	public StringList getUserSavedAccountStringList() {
+		return userSavedAccountStringList;
+	}
+	/**
+	 * @param userSavedAccountStringList the userSavedAccountStringList to set
+	 */
+	public void setUserSavedAccountStringList(StringList userSavedAccountStringList) {
+		this.userSavedAccountStringList = userSavedAccountStringList;
+	}
+	/**
+	 * @return the userSavedAccountPasswordStringList
+	 */
+	public StringList getUserSavedAccountPasswordStringList() {
+		return userSavedAccountPasswordStringList;
+	}
+	/**
+	 * @param userSavedAccountPasswordStringList the userSavedAccountPasswordStringList to set
+	 */
+	public void setUserSavedAccountPasswordStringList(StringList userSavedAccountPasswordStringList) {
+		this.userSavedAccountPasswordStringList = userSavedAccountPasswordStringList;
+	}
 	/**
 	 * @return the login
 	 */
