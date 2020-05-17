@@ -72,7 +72,7 @@ public class RegisterWindow extends UserData{
 		layout.putConstraint(SpringLayout.NORTH, cancelBt, 10, SpringLayout.SOUTH, userPasswordConfJLabel);		
 		frame.add(panel, BorderLayout.CENTER);
 		frame.setSize(300 , 350);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setTitle("BeSafe");
 		URL iconUrl = getClass().getResource("/BSIcon.png");
 		ImageIcon icon = new ImageIcon(iconUrl);

@@ -6,6 +6,23 @@ public class UserDataClass {
 	public String gehashedesPasswordString = "";
 	public String passworSaltString = "";
 	public byte[] userSaltByte;
+	public boolean login;
+	
+	
+	
+	
+	/**
+	 * @return the login
+	 */
+	public boolean isLogin() {
+		return login;
+	}
+	/**
+	 * @param login the login to set
+	 */
+	public void setLogin(boolean login) {
+		this.login = login;
+	}
 	/**
 	 * @return the userNameString
 	 */
