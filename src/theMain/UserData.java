@@ -19,6 +19,7 @@ public class UserData extends PasswordControll {
 			}
 			 else {
 				 new File(userNameString).mkdir();
+				 new File(userNameString + "/Udata").mkdir();
 				 String userPasswordString = userDataSet.getUserPasswordString();
 				 byte[] userSalt = userDataSet.getUserSaltByte();
 				 PrintWriter saltWriter = new PrintWriter(userNameString + "/salt.txt");

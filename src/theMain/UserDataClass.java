@@ -2,7 +2,11 @@ package theMain;
 
 
 
-public class UserDataClass {
+public class UserDataClass implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String userNameString = "";
 	public String userPasswordString = "";
 	public String gehashedesPasswordString = "";
@@ -10,15 +14,37 @@ public class UserDataClass {
 	public byte[] userSaltByte;
 	public boolean login;
 	public String userSiteNameString;
+	public String siteUserNameString;
+	public int siteID;
 
-
-	public String[] userSavedAccountSiteStringArray;
-	public String[] userSavedAccountStringArray;
-	public String[] userSavedAccountPasswordStringArray;
 	
 	
 	
 	
+	/**
+	 * @return the siteID
+	 */
+	public int getSiteID() {
+		return siteID;
+	}
+	/**
+	 * @param siteID the siteID to set
+	 */
+	public void setSiteID(int siteID) {
+		this.siteID = siteID;
+	}
+	/**
+	 * @return the siteUserNameString
+	 */
+	public String getSiteUserNameString() {
+		return siteUserNameString;
+	}
+	/**
+	 * @param siteUserNameString the siteUserNameString to set
+	 */
+	public void setSiteUserNameString(String siteUserNameString) {
+		this.siteUserNameString = siteUserNameString;
+	}
 	/**
 	 * @return the userSiteNameString
 	 */
@@ -36,42 +62,6 @@ public class UserDataClass {
 	 */
 	public boolean isLogin() {
 		return login;
-	}
-	/**
-	 * @return the userSavedAccountSiteStringArray
-	 */
-	public String[] getUserSavedAccountSiteStringArray() {
-		return userSavedAccountSiteStringArray;
-	}
-	/**
-	 * @param userSavedAccountSiteStringArray the userSavedAccountSiteStringArray to set
-	 */
-	public void setUserSavedAccountSiteStringArray(String[] userSavedAccountSiteStringArray) {
-		this.userSavedAccountSiteStringArray = userSavedAccountSiteStringArray;
-	}
-	/**
-	 * @return the userSavedAccountStringArray
-	 */
-	public String[] getUserSavedAccountStringArray() {
-		return userSavedAccountStringArray;
-	}
-	/**
-	 * @param userSavedAccountStringArray the userSavedAccountStringArray to set
-	 */
-	public void setUserSavedAccountStringArray(String[] userSavedAccountStringArray) {
-		this.userSavedAccountStringArray = userSavedAccountStringArray;
-	}
-	/**
-	 * @return the userSavedAccountPasswordStringArray
-	 */
-	public String[] getUserSavedAccountPasswordStringArray() {
-		return userSavedAccountPasswordStringArray;
-	}
-	/**
-	 * @param userSavedAccountPasswordStringArray the userSavedAccountPasswordStringArray to set
-	 */
-	public void setUserSavedAccountPasswordStringArray(String[] userSavedAccountPasswordStringArray) {
-		this.userSavedAccountPasswordStringArray = userSavedAccountPasswordStringArray;
 	}
 	/**
 	 * @param login the login to set

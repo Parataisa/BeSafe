@@ -18,7 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class TheInterface extends UserDataClass {
+public class TheInterface {
 	public JPanel panel;
 	public JFrame frame;
 	public JButton loggInBt;
@@ -26,10 +26,9 @@ public class TheInterface extends UserDataClass {
 	public JTextField userName;
 	public JTextField userPassword;
 
-	public TheInterface(boolean login) {
+	public TheInterface(UserDataClass userDataClass) {
 		
-			if (login) {
-				UserDataClass userDataClass = new UserDataClass();
+			if (userDataClass.isLogin()) {
 				panel = new JPanel();
 				frame = new JFrame();
 				frame.setLocationRelativeTo(null);
@@ -66,12 +65,22 @@ public class TheInterface extends UserDataClass {
 		        GridLayout centerButtonGridLayout = new GridLayout(10, 10);
 		        JButton add = new JButton("add");
 		        JPanel buttonPanel = new JPanel();
-		        AddPasswordToStore addAccWithAddButton = new AddPasswordToStore();
+		        PasswordManagementSystem addAccWithAddButton = new PasswordManagementSystem();
+		        addAccWithAddButton.numberOfFiles(userDataClass);
+		        for (int i = 0; i < userDataClass.siteID; i++) {
+		        	addAccWithAddButton.restoreAccountData(userDataClass, i);		
+		        	addAccWithAddButton.addAccountToTheList(userDataClass, 
+		        			centerButtonGridLayout, buttonPanel, frame);
+				}
 		        add.addActionListener(new ActionListener() {				
 					@Override
 					public void actionPerformed(ActionEvent e1) {
-							addAccWithAddButton.addAccountToTheList(userDataClass, accountNametf, accountPasswordtf, accountSitetf,
+							userDataClass.setUserSiteNameString(accountSitetf.getText());
+							addAccWithAddButton.addAccountToTheList(userDataClass,
 									centerButtonGridLayout, buttonPanel, frame);
+							userDataClass.setSiteUserNameString(accountNametf.getText());
+							userDataClass.setUserPasswordString(accountPasswordtf.getText());
+							addAccWithAddButton.storeAccountLocally(userDataClass);				
 					}
 		        });
 		        /** */
@@ -103,7 +112,7 @@ public class TheInterface extends UserDataClass {
 				frame.setIconImage(icon.getImage());
 				frame.setVisible(true);
 			}
-			else if (login == false) {	
+			else if (userDataClass.isLogin() == false) {	
 				panel = new JPanel();
 				frame = new JFrame();
 				userName = new JTextField();
@@ -139,14 +148,13 @@ public class TheInterface extends UserDataClass {
 					@Override
 					public void actionPerformed(ActionEvent e) 
 						 {			 
-							 	UserDataClass tempUserDataClass = new UserDataClass();
-							 	tempUserDataClass.setUserNameString(userName.getText());
-							 	tempUserDataClass.setUserPasswordString(userPassword.getText());
+							 	userDataClass.setUserNameString(userName.getText());
+							 	userDataClass.setUserPasswordString(userPassword.getText());
 							 	UserData tempData = new UserData();
 								try {
-									 tempUserDataClass.setLogin(tempData.CheckUserData(tempUserDataClass.getUserNameString(), tempUserDataClass.getUserPasswordString()));
+									userDataClass.setLogin(tempData.CheckUserData(userDataClass.getUserNameString(), userDataClass.getUserPasswordString()));
 									 frame.dispose();
-									 TheMainProgram.logginCheck(tempUserDataClass.isLogin());
+									 TheMainProgram.logginCheck(userDataClass);
 								} catch (URISyntaxException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();

@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-public class PasswordControll extends UserDataClass{
+public class PasswordControll{
 	
 	UserDataClass userDataSet = new UserDataClass();
 

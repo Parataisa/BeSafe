@@ -6,12 +6,12 @@ public class TheMainProgram
 	{	
 	UserDataClass userDataClass = new UserDataClass();
 	userDataClass.setLogin(false);
-	logginCheck(userDataClass.isLogin());
+	logginCheck(userDataClass);
 	}
  
-	public static void logginCheck(Boolean isLoggedin) 
+	public static void logginCheck(UserDataClass userDataClass) 
 	{
-	 new TheInterface(isLoggedin);
+	 new TheInterface(userDataClass);
 	}
 }
  
