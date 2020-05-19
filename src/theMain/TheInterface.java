@@ -1,12 +1,8 @@
 package theMain;
-
 import java.awt.BorderLayout;
-import java.awt.Container;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,15 +12,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class TheInterface extends UserDataClass {
 	public JPanel panel;
@@ -37,12 +29,13 @@ public class TheInterface extends UserDataClass {
 	public TheInterface(boolean login) {
 		
 			if (login) {
+				UserDataClass userDataClass = new UserDataClass();
 				panel = new JPanel();
 				frame = new JFrame();
 				frame.setLocationRelativeTo(null);
 				frame.setSize(1280, 720);
 				
-				/**MenuBar on top of the logedin Frame*/
+				/**MenuBar on top of the loged in Frame*/
 				JMenuBar jMenuBar = new JMenuBar();
 				JMenu m1 = new JMenu("File");
 				JMenu m2 = new JMenu("Help");
@@ -62,10 +55,38 @@ public class TheInterface extends UserDataClass {
 				/**Tool bar at the bottom, of the Frame */
 		        JLabel acccountNameLabel = new JLabel("Accountname: ");
 		        JLabel acccountPasswordLabel = new JLabel("Accountpassword: ");
+		        JLabel accountSiteLabel = new JLabel("For which Site: ");
+		        
 		        JTextField accountNametf = new JTextField(20);
 		        JTextField accountPasswordtf = new JTextField(20);
-		        JButton add = new JButton("Add");
+		        JTextField accountSitetf = new JTextField(20);
+		        /** */
+		        
+		        /** Button Layout in the middle with the account names */
+		        GridLayout centerButtonGridLayout = new GridLayout(10, 10);
+		        JButton add = new JButton("add");
+		        JPanel buttonPanel = new JPanel();
+		        AddPasswordToStore addAccWithAddButton = new AddPasswordToStore();
+		        add.addActionListener(new ActionListener() {				
+					@Override
+					public void actionPerformed(ActionEvent e1) {
+							addAccWithAddButton.addAccountToTheList(userDataClass, accountNametf, accountPasswordtf, accountSitetf,
+									centerButtonGridLayout, buttonPanel, frame);
+					}
+		        });
+		        /** */
+		        
 		        JButton cancel = new JButton("Cancel");
+		        cancel.addActionListener(new ActionListener() {	     
+					@Override
+					public void actionPerformed(ActionEvent e) {
+							accountNametf.setText("");
+							accountPasswordtf.setText("");
+							accountSitetf.setText("");								
+					}
+				}); 
+		        panel.add(accountSiteLabel);
+		        panel.add(accountSitetf);
 		        panel.add(acccountNameLabel);
 		        panel.add(accountNametf);
 		        panel.add(acccountPasswordLabel);
@@ -73,56 +94,7 @@ public class TheInterface extends UserDataClass {
 		        panel.add(add);
 		        panel.add(cancel);
 		        frame.getContentPane().add(BorderLayout.SOUTH, panel);
-		        /** */
-		        
-		        
-		        
-		        /** */
-		        UserDataClass userSavedAccountUserDataClass = new UserDataClass();
-		        String[] accountSiteStringArray = {"This is a Test","2"}; // Add Parameter to "te" for the Component for the List.
-		        userSavedAccountUserDataClass.setTestArrayStrings(accountSiteStringArray);
-		        String labels[] = userSavedAccountUserDataClass.getTestArrayStrings();        		
-		        Container contentPane = frame.getContentPane();	        
-		        JList<String> jlist = new JList<>(labels);
-		        JScrollPane scrollPane1 = new JScrollPane(jlist);
-		        contentPane.add(scrollPane1, BorderLayout.WEST);
-		        
-		        ListSelectionListener listSelectionListener = new ListSelectionListener() {
-		            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-		              System.out.print("First index: " + listSelectionEvent.getFirstIndex());
-		              System.out.print(", Last index: " + listSelectionEvent.getLastIndex());
-		              boolean adjust = listSelectionEvent.getValueIsAdjusting();
-		              System.out.println(", Adjusting? " + adjust);
-		              if (!adjust) {
-		                JList<?> list = (JList<?>) listSelectionEvent.getSource();
-		                int selections[] = list.getSelectedIndices();
-		                String selectionValues = list.getSelectedValue().toString();
-		                for (int i = 0, n = selections.length; i < n; i++) {
-		                  if (i == 0) {
-		                    System.out.print("  Selections: ");
-		                  }
-		                  System.out.print(selections[i] + "/" + selectionValues + " ");
-		                }
-		                System.out.println();
-		              }
-		            }
-		          };
-		          jlist.addListSelectionListener(listSelectionListener);
-
-		          MouseListener mouseListener = new MouseAdapter() {
-		            public void mouseClicked(MouseEvent mouseEvent) {
-		              JList<?> theList = (JList<?>) mouseEvent.getSource();
-		              if (mouseEvent.getClickCount() == 2) {
-		                int index = theList.locationToIndex(mouseEvent.getPoint());
-		                if (index >= 0) {
-		                  Object o = theList.getModel().getElementAt(index);
-		                  System.out.println("Double-clicked on: " + o.toString());
-		                }
-		              }
-		            }
-		          };
-		          jlist.addMouseListener(mouseListener);
-		        /** */
+	        
 		          
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setTitle("BeSafe");
@@ -200,7 +172,9 @@ public class TheInterface extends UserDataClass {
 			else {
 				System.out.println("Something went wrong!");
 			}
+			
 	}
+
 
 	 
 }

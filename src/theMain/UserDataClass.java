@@ -1,6 +1,6 @@
 package theMain;
 
-import com.sun.org.apache.xerces.internal.xs.StringList;
+
 
 public class UserDataClass {
 	public String userNameString = "";
@@ -9,67 +9,69 @@ public class UserDataClass {
 	public String passworSaltString = "";
 	public byte[] userSaltByte;
 	public boolean login;
-	public String[] testArrayStrings;
-	/**
-	 * @return the testArrayStrings
-	 */
-	public String[] getTestArrayStrings() {
-		return testArrayStrings;
-	}
-	/**
-	 * @param testArrayStrings the testArrayStrings to set
-	 */
-	public void setTestArrayStrings(String[] testArrayStrings) {
-		this.testArrayStrings = testArrayStrings;
-	}
-	public StringList userSavedAccountSiteStringList;
-	public StringList userSavedAccountStringList;
-	public StringList userSavedAccountPasswordStringList;
+	public String userSiteNameString;
+
+
+	public String[] userSavedAccountSiteStringArray;
+	public String[] userSavedAccountStringArray;
+	public String[] userSavedAccountPasswordStringArray;
 	
 	
 	
 	
 	/**
-	 * @return the userSavedAccountSiteStringList
+	 * @return the userSiteNameString
 	 */
-	public StringList getUserSavedAccountSiteStringList() {
-		return userSavedAccountSiteStringList;
+	public String getUserSiteNameString() {
+		return userSiteNameString;
 	}
 	/**
-	 * @param userSavedAccountSiteStringList the userSavedAccountSiteStringList to set
+	 * @param userSiteNameString the userSiteNameString to set
 	 */
-	public void setUserSavedAccountSiteStringList(StringList userSavedAccountSiteStringList) {
-		this.userSavedAccountSiteStringList = userSavedAccountSiteStringList;
-	}
-	/**
-	 * @return the userSavedAccountStringList
-	 */
-	public StringList getUserSavedAccountStringList() {
-		return userSavedAccountStringList;
-	}
-	/**
-	 * @param userSavedAccountStringList the userSavedAccountStringList to set
-	 */
-	public void setUserSavedAccountStringList(StringList userSavedAccountStringList) {
-		this.userSavedAccountStringList = userSavedAccountStringList;
-	}
-	/**
-	 * @return the userSavedAccountPasswordStringList
-	 */
-	public StringList getUserSavedAccountPasswordStringList() {
-		return userSavedAccountPasswordStringList;
-	}
-	/**
-	 * @param userSavedAccountPasswordStringList the userSavedAccountPasswordStringList to set
-	 */
-	public void setUserSavedAccountPasswordStringList(StringList userSavedAccountPasswordStringList) {
-		this.userSavedAccountPasswordStringList = userSavedAccountPasswordStringList;
+	public void setUserSiteNameString(String userSiteNameString) {
+		this.userSiteNameString = userSiteNameString;
 	}
 	/**
 	 * @return the login
 	 */
 	public boolean isLogin() {
 		return login;
+	}
+	/**
+	 * @return the userSavedAccountSiteStringArray
+	 */
+	public String[] getUserSavedAccountSiteStringArray() {
+		return userSavedAccountSiteStringArray;
+	}
+	/**
+	 * @param userSavedAccountSiteStringArray the userSavedAccountSiteStringArray to set
+	 */
+	public void setUserSavedAccountSiteStringArray(String[] userSavedAccountSiteStringArray) {
+		this.userSavedAccountSiteStringArray = userSavedAccountSiteStringArray;
+	}
+	/**
+	 * @return the userSavedAccountStringArray
+	 */
+	public String[] getUserSavedAccountStringArray() {
+		return userSavedAccountStringArray;
+	}
+	/**
+	 * @param userSavedAccountStringArray the userSavedAccountStringArray to set
+	 */
+	public void setUserSavedAccountStringArray(String[] userSavedAccountStringArray) {
+		this.userSavedAccountStringArray = userSavedAccountStringArray;
+	}
+	/**
+	 * @return the userSavedAccountPasswordStringArray
+	 */
+	public String[] getUserSavedAccountPasswordStringArray() {
+		return userSavedAccountPasswordStringArray;
+	}
+	/**
+	 * @param userSavedAccountPasswordStringArray the userSavedAccountPasswordStringArray to set
+	 */
+	public void setUserSavedAccountPasswordStringArray(String[] userSavedAccountPasswordStringArray) {
+		this.userSavedAccountPasswordStringArray = userSavedAccountPasswordStringArray;
 	}
 	/**
 	 * @param login the login to set
