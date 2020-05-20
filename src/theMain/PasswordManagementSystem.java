@@ -45,17 +45,18 @@ public class PasswordManagementSystem {
 	try {
 		numberOfFiles(userDataClass);
 		String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
-		String encryptedAccountNameString = encrypt(keyString, userDataClass.getUserNameString());
-		String encryptedPwString = encrypt(keyString, userDataClass.getUserPasswordString());
-		String encryptedSiteNameString = encrypt(keyString, userDataClass.getUserSiteNameString());
+		String encryptedAccountNameString = encrypt(userDataClass.getSiteUserNameString(), keyString);
+		String encryptedPwString = encrypt(userDataClass.getUserPasswordString(), keyString);
+		String encryptedSiteNameString = encrypt(userDataClass.getUserSiteNameString(), keyString);
 		FileOutputStream fos;
 		ObjectOutputStream oOut;
 		UserDataClass encrpteDataClass = new UserDataClass();
-		encrpteDataClass.setUserNameString(encryptedAccountNameString);
+		encrpteDataClass.setUserSiteNameString(encryptedAccountNameString);
 		encrpteDataClass.setUserPasswordString(encryptedPwString);
 		encrpteDataClass.setSiteUserNameString(encryptedSiteNameString);
 		try {
 			fos = new FileOutputStream(file + "/Udata" + "/" + userDataClass.getSiteID() + "Acc.ser");
+			
 			oOut = new ObjectOutputStream(fos);
 	        oOut.writeObject(encrpteDataClass);
 	        oOut.close();
@@ -84,9 +85,9 @@ public class PasswordManagementSystem {
             in = new ObjectInputStream(fis);
             decryptUserDataClass = (UserDataClass) in.readObject();
             in.close();
-            userDataClass.setUserNameString(decrypt(keyString, decryptUserDataClass.getUserNameString()));
-            userDataClass.setUserPasswordString(decrypt(keyString, decryptUserDataClass.getUserPasswordString()));
-            userDataClass.setSiteUserNameString(decrypt(keyString, decryptUserDataClass.getUserSiteNameString()));
+            userDataClass.setUserSiteNameString(decrypt(decryptUserDataClass.getUserSiteNameString(), keyString));
+            userDataClass.setUserPasswordString(decrypt(decryptUserDataClass.getUserPasswordString(), keyString));
+            userDataClass.setSiteUserNameString(decrypt(decryptUserDataClass.getUserSiteNameString(), keyString));
 		}
 		catch (Exception e) {
 			// TODO: handle exception
