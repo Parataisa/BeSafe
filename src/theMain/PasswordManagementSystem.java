@@ -3,10 +3,7 @@ package theMain;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,6 +11,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JButton;
@@ -28,7 +27,7 @@ public class PasswordManagementSystem {
 	{
 		buttonPanel.setLayout(centerButtonGridLayout);
 		JButton accountButton = new JButton();					
-		accountButton.setText(userDataClass.getUserSiteNameString());
+		accountButton.setText(userDataClass.getSiteNameString());
 		accountButton.setSize(250, 100);
 		buttonPanel.add(accountButton);
 		buttonPanel.revalidate();
@@ -43,23 +42,29 @@ public class PasswordManagementSystem {
 	if(file.exists() == true)
 	{
 	try {
-		numberOfFiles(userDataClass);
 		String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
+		String pathString = (file + "/Udata" + "/" + "Acc.data");
+		String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
+		Pattern regexFirstScanPatten = Pattern.compile("\\[(.*?)\\]");
+		Matcher match = regexFirstScanPatten.matcher(uDataString);
+		int count = 0;
+		while(match.find())
+			count++;
+		Integer matchesCountInteger = count; 
+		Integer siteID = matchesCountInteger;
 		String encryptedAccountNameString = encrypt(userDataClass.getSiteUserNameString(), keyString);
 		String encryptedPwString = encrypt(userDataClass.getUserPasswordString(), keyString);
-		String encryptedSiteNameString = encrypt(userDataClass.getUserSiteNameString(), keyString);
-		FileOutputStream fos;
-		ObjectOutputStream oOut;
-		UserDataClass encrpteDataClass = new UserDataClass();
-		encrpteDataClass.setUserSiteNameString(encryptedAccountNameString);
-		encrpteDataClass.setUserPasswordString(encryptedPwString);
-		encrpteDataClass.setSiteUserNameString(encryptedSiteNameString);
+		String encryptedSiteNameString = encrypt(userDataClass.getSiteNameString(), keyString);
 		try {
-			fos = new FileOutputStream(file + "/Udata" + "/" + userDataClass.getSiteID() + "Acc.ser");
-			
-			oOut = new ObjectOutputStream(fos);
-	        oOut.writeObject(encrpteDataClass);
-	        oOut.close();
+			File appendFileCheck = new File(pathString);
+			boolean appendToFile = appendFileCheck.exists();
+			FileWriter writer = new FileWriter(pathString, appendToFile);
+			writer.write("[SiteID:" + siteID + ":SiteID" + 
+						 "Acc:" + encryptedAccountNameString + ":Acc" +
+						 "Pw:" + encryptedPwString + ":Pw" +  
+						 "Site:" + encryptedSiteNameString + ":Site]");
+			writer.close();
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,31 +76,37 @@ public class PasswordManagementSystem {
 	}	
 		
 	}
-	public void restoreAccountData (UserDataClass userDataClass, int i) 
+	public void restoreAccountData (UserDataClass userDataClass, GridLayout centerButtonGridLayout,
+			JPanel buttonPanel, JFrame frame) 
 	{
 		File file = new File(userDataClass.getUserNameString());
 		if(file.exists() == true)
 		{
-			FileInputStream fis = null;
-			ObjectInputStream in = null;
 		try {
 			String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
 			UserDataClass decryptUserDataClass = new UserDataClass();			
-            fis = new FileInputStream(file + "/Udata" + "/" + i + "Acc.ser");
-            in = new ObjectInputStream(fis);
-            decryptUserDataClass = (UserDataClass) in.readObject();
-            in.close();
-            userDataClass.setUserSiteNameString(decrypt(decryptUserDataClass.getUserSiteNameString(), keyString));
-            userDataClass.setUserPasswordString(decrypt(decryptUserDataClass.getUserPasswordString(), keyString));
-            userDataClass.setSiteUserNameString(decrypt(decryptUserDataClass.getUserSiteNameString(), keyString));
+			String pathString = (file + "/Udata" + "/" + "Acc.data");
+			String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
+			Pattern regexFirstScanPatten = Pattern.compile("\\[(.*?)\\]");
+			Matcher match = regexFirstScanPatten.matcher(uDataString);
+			while (match.find())
+			{
+			System.out.println(match.group(1));
+			accSiteDataReader(decryptUserDataClass, match.group(1));
+			userDataClass.setSiteID(decryptUserDataClass.getSiteID());
+			userDataClass.setSiteUserNameString(decrypt(decryptUserDataClass.getSiteUserNameString(), keyString));
+			userDataClass.setUserPasswordString(decrypt(decryptUserDataClass.getUserPasswordString(), keyString));
+			userDataClass.setSiteNameString(decrypt(decryptUserDataClass.getSiteNameString(), keyString));
+			addAccountToTheList(userDataClass, 
+        			centerButtonGridLayout, buttonPanel, frame);
+			}
 		}
 		catch (Exception e) {
 			// TODO: handle exception
 		}
 		}
-		
 	}
-	
+
 	
     private static SecretKeySpec secretKey;
     private static byte[] key;
@@ -152,17 +163,26 @@ public class PasswordManagementSystem {
         return null;
     }
     
-    public void numberOfFiles(UserDataClass userDataClass) {
-		int count = 0;
-		File file = new File(userDataClass.getUserNameString() + "/Udata");
-		File[] files = file.listFiles();
-		if (files != null) 
-		{
-		for (int i = 0; i < files.length; i++) {
-			count++;	
-		}	
-		userDataClass.setSiteID(count);
-		}
+    private void accSiteDataReader(UserDataClass decryptUserDataClass, String match) {
+    	Pattern siteIdPattern = Pattern.compile("SiteID:(.*?):SiteID");
+    	Matcher siteIdMatcher = siteIdPattern.matcher(match);
+    	siteIdMatcher.find();
+    	decryptUserDataClass.setSiteID(Integer.parseInt(siteIdMatcher.group(1)));
+    	
+    	Pattern siteAccPattern = Pattern.compile("Acc:(.*?):Acc");
+    	Matcher siteAccMatcher = siteAccPattern.matcher(match);
+    	siteAccMatcher.find();
+    	decryptUserDataClass.setSiteUserNameString(siteAccMatcher.group(1));
+    	
+    	Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
+    	Matcher sitePwMatcher = sitePwPattern.matcher(match);
+    	sitePwMatcher.find();
+    	decryptUserDataClass.setUserPasswordString(sitePwMatcher.group(1));
+    	
+    	Pattern siteNamePattern = Pattern.compile("Site:(.*?):Site");
+    	Matcher siteNameMatcher = siteNamePattern.matcher(match);
+    	siteNameMatcher.find();
+    	decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
 	}
 	}
 

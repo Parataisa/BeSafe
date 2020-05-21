@@ -48,13 +48,13 @@ public class UserDataClass implements java.io.Serializable {
 	/**
 	 * @return the userSiteNameString
 	 */
-	public String getUserSiteNameString() {
+	public String getSiteNameString() {
 		return userSiteNameString;
 	}
 	/**
 	 * @param userSiteNameString the userSiteNameString to set
 	 */
-	public void setUserSiteNameString(String userSiteNameString) {
+	public void setSiteNameString(String userSiteNameString) {
 		this.userSiteNameString = userSiteNameString;
 	}
 	/**

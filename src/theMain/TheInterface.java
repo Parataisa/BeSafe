@@ -65,22 +65,20 @@ public class TheInterface {
 		        GridLayout centerButtonGridLayout = new GridLayout(10, 10);
 		        JButton add = new JButton("add");
 		        JPanel buttonPanel = new JPanel();
-		        PasswordManagementSystem addAccWithAddButton = new PasswordManagementSystem();
-		        addAccWithAddButton.numberOfFiles(userDataClass);
-		        for (int i = 0; i < userDataClass.siteID; i++) {
-8		        	addAccWithAddButton.restoreAccountData(userDataClass, i);		
-		        	addAccWithAddButton.addAccountToTheList(userDataClass, 
-		        			centerButtonGridLayout, buttonPanel, frame);
-				}
+		        PasswordManagementSystem addAccWithAddButton = new PasswordManagementSystem();    
+		        	addAccWithAddButton.restoreAccountData(userDataClass, centerButtonGridLayout, buttonPanel, frame);
 		        add.addActionListener(new ActionListener() {				
 					@Override
 					public void actionPerformed(ActionEvent e1) {
-							userDataClass.setUserSiteNameString(accountSitetf.getText());
+							userDataClass.setSiteNameString(accountSitetf.getText());
 							addAccWithAddButton.addAccountToTheList(userDataClass,
 									centerButtonGridLayout, buttonPanel, frame);
 							userDataClass.setSiteUserNameString(accountNametf.getText());
 							userDataClass.setUserPasswordString(accountPasswordtf.getText());
-							addAccWithAddButton.storeAccountLocally(userDataClass);				
+							addAccWithAddButton.storeAccountLocally(userDataClass);
+							accountNametf.setText("");
+							accountPasswordtf.setText("");
+							accountSitetf.setText("");	
 					}
 		        });
 		        /** */
