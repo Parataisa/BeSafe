@@ -2,6 +2,10 @@ package theMain;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
@@ -11,6 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.crypto.Cipher;
@@ -18,9 +23,10 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.Toolkit;
 
 public class PasswordManagementSystem {
-
+	private static HashMap<Integer, String> buttonIdHashMap = new HashMap<>();
 	
 	public void addAccountToTheList(UserDataClass userDataClass, GridLayout centerButtonGridLayout,
 			JPanel buttonPanel, JFrame frame) 
@@ -29,6 +35,14 @@ public class PasswordManagementSystem {
 		JButton accountButton = new JButton();					
 		accountButton.setText(userDataClass.getSiteNameString());
 		accountButton.setSize(250, 100);
+		accountButton.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				StringSelection selection = new StringSelection(accountButton.getText());
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(selection, selection);
+			}
+		});
 		buttonPanel.add(accountButton);
 		buttonPanel.revalidate();
 		buttonPanel.repaint();
@@ -50,11 +64,10 @@ public class PasswordManagementSystem {
 		int count = 0;
 		while(match.find())
 			count++;
-		Integer matchesCountInteger = count; 
-		Integer siteID = matchesCountInteger;
+		Integer siteID = count; 
 		String encryptedAccountNameString = encrypt(userDataClass.getSiteUserNameString(), keyString);
 		String encryptedPwString = encrypt(userDataClass.getUserPasswordString(), keyString);
-		String encryptedSiteNameString = encrypt(userDataClass.getSiteNameString(), keyString);
+		String encryptedSiteNameString = encrypt(userDataClass.getSiteNameString(), keyString + siteID);
 		try {
 			File appendFileCheck = new File(pathString);
 			boolean appendToFile = appendFileCheck.exists();
@@ -64,7 +77,7 @@ public class PasswordManagementSystem {
 						 "Pw:" + encryptedPwString + ":Pw" +  
 						 "Site:" + encryptedSiteNameString + ":Site]");
 			writer.close();
-
+			buttonIdHashMap.put(userDataClass.getSiteID(), encryptedSiteNameString);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,9 +109,10 @@ public class PasswordManagementSystem {
 			userDataClass.setSiteID(decryptUserDataClass.getSiteID());
 			userDataClass.setSiteUserNameString(decrypt(decryptUserDataClass.getSiteUserNameString(), keyString));
 			userDataClass.setUserPasswordString(decrypt(decryptUserDataClass.getUserPasswordString(), keyString));
-			userDataClass.setSiteNameString(decrypt(decryptUserDataClass.getSiteNameString(), keyString));
+			userDataClass.setSiteNameString(decrypt(decryptUserDataClass.getSiteNameString(), keyString + userDataClass.getSiteID()));
 			addAccountToTheList(userDataClass, 
         			centerButtonGridLayout, buttonPanel, frame);
+			buttonIdHashMap.put(userDataClass.getSiteID(), decryptUserDataClass.getSiteNameString());
 			}
 		}
 		catch (Exception e) {

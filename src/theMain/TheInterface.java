@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -25,7 +26,7 @@ public class TheInterface {
 	public JButton registerUserBt;
 	public JTextField userName;
 	public JTextField userPassword;
-
+	
 	public TheInterface(UserDataClass userDataClass) {
 		
 			if (userDataClass.isLogin()) {
@@ -34,7 +35,7 @@ public class TheInterface {
 				frame.setLocationRelativeTo(null);
 				frame.setSize(1280, 720);
 				
-				/**MenuBar on top of the loged in Frame*/
+				/**MenuBar on top of the logged in Frame*/
 				JMenuBar jMenuBar = new JMenuBar();
 				JMenu m1 = new JMenu("File");
 				JMenu m2 = new JMenu("Help");
@@ -81,6 +82,7 @@ public class TheInterface {
 							accountSitetf.setText("");	
 					}
 		        });
+		        
 		        /** */
 		        
 		        JButton cancel = new JButton("Cancel");
@@ -101,7 +103,12 @@ public class TheInterface {
 		        panel.add(add);
 		        panel.add(cancel);
 		        frame.getContentPane().add(BorderLayout.SOUTH, panel);
-	        
+		        
+		        
+		        
+		        
+		        
+		        
 		          
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setTitle("BeSafe");
