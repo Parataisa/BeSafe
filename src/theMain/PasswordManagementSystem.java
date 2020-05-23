@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,13 +33,18 @@ public class PasswordManagementSystem {
 			JPanel buttonPanel, JFrame frame) 
 	{
 		buttonPanel.setLayout(centerButtonGridLayout);
-		JButton accountButton = new JButton();					
+		JButton accountButton = new JButton();
+		Integer siteIdInt = userDataClass.getSiteID();
+		String siteIdAsString = new String(siteIdInt.toString());
+		accountButton.setName(siteIdAsString);
 		accountButton.setText(userDataClass.getSiteNameString());
 		accountButton.setSize(250, 100);
 		accountButton.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				StringSelection selection = new StringSelection(accountButton.getText());
+				Integer accButtonNameInteger = Integer.parseInt(accountButton.getName());
+				findingThePasswordForTheAccount(accButtonNameInteger, userDataClass);
+				StringSelection selection = new StringSelection(userDataClass.getUserPasswordString());
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(selection, selection);
 			}
@@ -64,7 +70,8 @@ public class PasswordManagementSystem {
 		int count = 0;
 		while(match.find())
 			count++;
-		Integer siteID = count; 
+		Integer siteID = count;
+		userDataClass.setSiteID(siteID);
 		String encryptedAccountNameString = encrypt(userDataClass.getSiteUserNameString(), keyString);
 		String encryptedPwString = encrypt(userDataClass.getUserPasswordString(), keyString);
 		String encryptedSiteNameString = encrypt(userDataClass.getSiteNameString(), keyString + siteID);
@@ -198,5 +205,33 @@ public class PasswordManagementSystem {
     	siteNameMatcher.find();
     	decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
 	}
-	}
+    
+    private void findingThePasswordForTheAccount(int buttonId, UserDataClass userDataClass) {
+    	File file = new File(userDataClass.getUserNameString());
+		if(file.exists() == true)
+		{
+			String keyString;
+			try {
+				keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
+				String pathString = (file + "/Udata" + "/" + "Acc.data");
+				String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
+				Pattern regexFirstScanPatten = Pattern.compile("\\[SiteID:"+ buttonId +"(.*?)\\]");
+				Matcher match = regexFirstScanPatten.matcher(uDataString);
+				while (match.find())
+				{	
+					System.out.println(match.group());
+			    	Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
+			    	Matcher sitePwMatcher = sitePwPattern.matcher(match.group(1));
+			    	sitePwMatcher.find();
+			    	String tempUserPasswordString = (sitePwMatcher.group(1));
+					userDataClass.setUserPasswordString(decrypt(tempUserPasswordString, keyString));
+					
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+    }
+    }
 

@@ -72,11 +72,11 @@ public class TheInterface {
 					@Override
 					public void actionPerformed(ActionEvent e1) {
 							userDataClass.setSiteNameString(accountSitetf.getText());
+							addAccWithAddButton.storeAccountLocally(userDataClass);
 							addAccWithAddButton.addAccountToTheList(userDataClass,
 									centerButtonGridLayout, buttonPanel, frame);
 							userDataClass.setSiteUserNameString(accountNametf.getText());
 							userDataClass.setUserPasswordString(accountPasswordtf.getText());
-							addAccWithAddButton.storeAccountLocally(userDataClass);
 							accountNametf.setText("");
 							accountPasswordtf.setText("");
 							accountSitetf.setText("");	
