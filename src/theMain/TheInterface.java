@@ -17,6 +17,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class TheInterface {
@@ -24,8 +25,8 @@ public class TheInterface {
 	public JFrame frame;
 	public JButton loggInBt;
 	public JButton registerUserBt;
-	public JTextField userName;
-	public JTextField userPassword;
+	private JTextField userName;
+	private JPasswordField userPassword;
 	
 	public TheInterface(UserDataClass userDataClass) {
 		
@@ -58,8 +59,9 @@ public class TheInterface {
 		        JLabel accountSiteLabel = new JLabel("For which Site: ");
 		        
 		        JTextField accountNametf = new JTextField(20);
-		        JTextField accountPasswordtf = new JTextField(20);
+		        JTextField accountPasswordPwf = new JTextField(20);
 		        JTextField accountSitetf = new JTextField(20);
+
 		        /** */
 		        
 		        /** Button Layout in the middle with the account names */
@@ -72,13 +74,13 @@ public class TheInterface {
 					@Override
 					public void actionPerformed(ActionEvent e1) {
 							userDataClass.setSiteNameString(accountSitetf.getText());
+							userDataClass.setSiteUserNameString(accountNametf.getText());
+							userDataClass.setUserSitePasswordString(accountPasswordPwf.getText());
 							addAccWithAddButton.storeAccountLocally(userDataClass);
 							addAccWithAddButton.addAccountToTheList(userDataClass,
 									centerButtonGridLayout, buttonPanel, frame);
-							userDataClass.setSiteUserNameString(accountNametf.getText());
-							userDataClass.setUserPasswordString(accountPasswordtf.getText());
 							accountNametf.setText("");
-							accountPasswordtf.setText("");
+							accountPasswordPwf.setText("");
 							accountSitetf.setText("");	
 					}
 		        });
@@ -90,7 +92,7 @@ public class TheInterface {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 							accountNametf.setText("");
-							accountPasswordtf.setText("");
+							accountPasswordPwf.setText("");
 							accountSitetf.setText("");								
 					}
 				}); 
@@ -99,7 +101,7 @@ public class TheInterface {
 		        panel.add(acccountNameLabel);
 		        panel.add(accountNametf);
 		        panel.add(acccountPasswordLabel);
-		        panel.add(accountPasswordtf);
+		        panel.add(accountPasswordPwf);
 		        panel.add(add);
 		        panel.add(cancel);
 		        frame.getContentPane().add(BorderLayout.SOUTH, panel);
@@ -121,7 +123,8 @@ public class TheInterface {
 				panel = new JPanel();
 				frame = new JFrame();
 				userName = new JTextField();
-				userPassword = new JTextField();
+				userPassword = new JPasswordField();
+				userPassword.setEchoChar('*');
 				loggInBt = new JButton("Login");
 				registerUserBt = new JButton("Register");
 				panel.setBorder(BorderFactory.createEmptyBorder(15,5,15,5));
@@ -153,11 +156,13 @@ public class TheInterface {
 					@Override
 					public void actionPerformed(ActionEvent e) 
 						 {			 
+								char[] userPasswordChar = userPassword.getPassword();
 							 	userDataClass.setUserNameString(userName.getText());
-							 	userDataClass.setUserPasswordString(userPassword.getText());
 							 	UserData tempData = new UserData();
 								try {
-									userDataClass.setLogin(tempData.CheckUserData(userDataClass.getUserNameString(), userDataClass.getUserPasswordString()));
+									userDataClass.setLogin(tempData.CheckUserData(
+											userDataClass.getUserNameString(), 
+											userPasswordChar));
 									 frame.dispose();
 									 TheMainProgram.logginCheck(userDataClass);
 								} catch (URISyntaxException e1) {
@@ -168,6 +173,15 @@ public class TheInterface {
 									e1.printStackTrace();
 								}
 						 }
+				});
+				userPassword.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent pw) {
+						char[] pwInput = userPassword.getPassword();
+						userDataClass.setUserPasswordCharAr(pwInput);
+						
+					}
 				});
 				registerUserBt.addActionListener(new ActionListener() {
 					@Override

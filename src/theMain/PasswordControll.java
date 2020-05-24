@@ -1,60 +1,65 @@
 package theMain;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Random;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 public class PasswordControll{
 	
 	UserDataClass userDataSet = new UserDataClass();
+    private static final Random RANDOM = new SecureRandom();
+    private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static final int ITERATIONS = 10000;
+    private static final int KEY_LENGTH = 256;
 
-	public void getUserDataForProcessingList(String userPassword, String userName) throws NoSuchAlgorithmException 
-	{
-		userDataSet.setUserPasswordString(userPassword);
-		userDataSet.setUserNameString(userName);
-		passwordHashing();
-	}
-	private UserData passwordHashing() throws NoSuchAlgorithmException {
-		String userPassword = userDataSet.getUserPasswordString();
-		String userNameString = userDataSet.getUserNameString();
-		byte[] salt = getSalt();
-		String sPassword = getSecurePassword(userPassword, salt);
-		UserData newUserData = new UserData();
-		userDataSet.setUserNameString(userNameString);
-		userDataSet.setUserPasswordString(sPassword);
-		userDataSet.setUserSaltByte(salt);
-		return newUserData;
-		}
+	public static String generatePassword(char[] password, String salt) throws NoSuchAlgorithmException {	
+        String returnValue = null;
+        byte[] securePassword = hash(password, salt.getBytes());
+ 
+        returnValue = Base64.getEncoder().encodeToString(securePassword);
+ 
+        return returnValue;
+    }
 		
 	
-	public static String getSecurePassword(String userPassword, byte[] salt) {
-		String hashedPasswordString = "";
+	public static byte[] hash(char[] userPassword, byte[] salt) {
+        PBEKeySpec spec = new PBEKeySpec(userPassword, salt, ITERATIONS, KEY_LENGTH);
+        Arrays.fill(userPassword, Character.MIN_VALUE);
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(salt); 
-            byte[] bytes = md.digest(userPassword.getBytes());
-            
-            StringBuilder sb = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++)
-            {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            hashedPasswordString = sb.toString();
-        } 
-        catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            return skf.generateSecret(spec).getEncoded();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new AssertionError("Error while hashing a password: " + e.getMessage(), e);
+        } finally {
+            spec.clearPassword();
         }
-        return hashedPasswordString;
-	}
+    }
 	
 	
-	private static byte[] getSalt() throws NoSuchAlgorithmException
-	{
-	    SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-	    byte[] salt = new byte[16];
-	    sr.nextBytes(salt);
-	    return salt;
-	}
+    public static String getSalt(int length) {
+        StringBuilder returnValue = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+        }
+        return new String(returnValue);
+    }
+    public static boolean verifyUserPassword(char[] providedPassword,
+            char[] securedPassword, String salt) throws NoSuchAlgorithmException
+    {
+        boolean returnValue = false;
+
+        String newSecurePassword = generatePassword(providedPassword, salt);
+        String securedPasswordStringConvertedString = new String(securedPassword);
+        returnValue = newSecurePassword.equalsIgnoreCase(securedPasswordStringConvertedString);
+        
+        return returnValue;
+    }
 			
 }
 

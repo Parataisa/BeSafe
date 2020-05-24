@@ -44,7 +44,7 @@ public class PasswordManagementSystem {
 			public void actionPerformed(ActionEvent e) {
 				Integer accButtonNameInteger = Integer.parseInt(accountButton.getName());
 				findingThePasswordForTheAccount(accButtonNameInteger, userDataClass);
-				StringSelection selection = new StringSelection(userDataClass.getUserPasswordString());
+				StringSelection selection = new StringSelection(userDataClass.getUserSitePasswordString());
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(selection, selection);
 			}
@@ -73,7 +73,7 @@ public class PasswordManagementSystem {
 		Integer siteID = count;
 		userDataClass.setSiteID(siteID);
 		String encryptedAccountNameString = encrypt(userDataClass.getSiteUserNameString(), keyString);
-		String encryptedPwString = encrypt(userDataClass.getUserPasswordString(), keyString);
+		String encryptedPwString = encrypt(userDataClass.getUserSitePasswordString(), keyString);
 		String encryptedSiteNameString = encrypt(userDataClass.getSiteNameString(), keyString + siteID);
 		try {
 			File appendFileCheck = new File(pathString);
@@ -115,7 +115,7 @@ public class PasswordManagementSystem {
 			accSiteDataReader(decryptUserDataClass, match.group(1));
 			userDataClass.setSiteID(decryptUserDataClass.getSiteID());
 			userDataClass.setSiteUserNameString(decrypt(decryptUserDataClass.getSiteUserNameString(), keyString));
-			userDataClass.setUserPasswordString(decrypt(decryptUserDataClass.getUserPasswordString(), keyString));
+			userDataClass.setUserSitePasswordString(decrypt(decryptUserDataClass.getUserSitePasswordString(), keyString));
 			userDataClass.setSiteNameString(decrypt(decryptUserDataClass.getSiteNameString(), keyString + userDataClass.getSiteID()));
 			addAccountToTheList(userDataClass, 
         			centerButtonGridLayout, buttonPanel, frame);
@@ -198,7 +198,7 @@ public class PasswordManagementSystem {
     	Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
     	Matcher sitePwMatcher = sitePwPattern.matcher(match);
     	sitePwMatcher.find();
-    	decryptUserDataClass.setUserPasswordString(sitePwMatcher.group(1));
+    	decryptUserDataClass.setUserSitePasswordString(sitePwMatcher.group(1));
     	
     	Pattern siteNamePattern = Pattern.compile("Site:(.*?):Site");
     	Matcher siteNameMatcher = siteNamePattern.matcher(match);
@@ -224,7 +224,7 @@ public class PasswordManagementSystem {
 			    	Matcher sitePwMatcher = sitePwPattern.matcher(match.group(1));
 			    	sitePwMatcher.find();
 			    	String tempUserPasswordString = (sitePwMatcher.group(1));
-					userDataClass.setUserPasswordString(decrypt(tempUserPasswordString, keyString));
+					userDataClass.setUserSitePasswordString(decrypt(tempUserPasswordString, keyString));
 					
 				}
 			} catch (IOException e) {

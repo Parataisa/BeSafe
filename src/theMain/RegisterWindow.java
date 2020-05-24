@@ -4,11 +4,14 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.Arrays;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
@@ -16,8 +19,8 @@ public class RegisterWindow extends UserData{
 	private JPanel panel;
 	private JFrame frame;
 	private JTextField userName;
-	private JTextField userPassword;
-	private JTextField userConfPassword;
+	private JPasswordField userPassword;
+	private JPasswordField userConfPassword;
 	public JButton registerUserBt;
 	public JButton cancelBt;
 	private JLabel userNameJLabel;
@@ -28,8 +31,10 @@ public class RegisterWindow extends UserData{
 		panel = new JPanel(new SpringLayout());
 		frame = new JFrame();
 		userName = new JTextField("", 15);
-		userPassword = new JTextField("", 15);
-		userConfPassword = new JTextField("", 15);	
+		userPassword = new JPasswordField("", 15);
+		userConfPassword = new JPasswordField("", 15);	
+		userPassword.setEchoChar('*');
+		userConfPassword.setEchoChar('*');
 		userNameJLabel = new JLabel("Name:");
 		userPasswordJLabel = new JLabel("Password:");
 		userPasswordConfJLabel = new JLabel("Password:");
@@ -89,20 +94,22 @@ public class RegisterWindow extends UserData{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String userPasswordString = getUserPassword().getText();
-				String userConfPasswordString = getUserConfPassword().getText();
+				char[] userPasswordChar = getUserPassword().getPassword();
+				char[] userConfPasswordChar = getUserConfPassword().getPassword();
 				String userNameString = getUserName().getText();
 				if (userNameString.isEmpty()) {
 					System.out.println("Please enter a Username.");
 				}
-				else if (userPasswordString.isEmpty() || userConfPasswordString.isEmpty()) {
+				else if (userPasswordChar.length == 0 
+						|| userConfPassword.getPassword().length == 0) {
 					System.out.println("Please enter a Password");
 				}
-				else if((userPasswordString.equals(userConfPasswordString)) == false){
+				else if((Arrays.equals(userPasswordChar, userConfPasswordChar) == false))
+				{
 					System.out.println("The Passwords doesn't match!");
 				}
-				else if (userPasswordString.equals(userConfPasswordString)) {
-					saveUserData(getUserPassword().getText(),getUserName().getText());
+				else if (Arrays.equals(userPasswordChar, userConfPasswordChar)) {
+					saveUserData(userPasswordChar, getUserName().getText());
 					frame.dispose();					
 				}
 				else {
@@ -115,10 +122,10 @@ public class RegisterWindow extends UserData{
 	private JTextField getUserName() {
 		return userName;
 	}
-	private JTextField getUserPassword() {
+	private JPasswordField getUserPassword() {
 		return userPassword;
 	}
-	private JTextField getUserConfPassword() {
+	private JPasswordField getUserConfPassword() {
 		return userConfPassword;
 	}
 }

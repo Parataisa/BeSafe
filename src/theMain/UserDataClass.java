@@ -8,19 +8,43 @@ public class UserDataClass implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	public String userNameString = "";
-	public String userPasswordString = "";
+	public char[] userPasswordCharAr;
 	public String gehashedesPasswordString = "";
 	public String passworSaltString = "";
-	public byte[] userSaltByte;
+	public String userSaltString;
 	public boolean login;
+	public String userSitePasswordString;
 	public String userSiteNameString;
 	public String siteUserNameString;
 	public int siteID;
-
 	
 	
 	
 	
+	/**
+	 * @return the userSitePasswordString
+	 */
+	public String getUserSitePasswordString() {
+		return userSitePasswordString;
+	}
+	/**
+	 * @param userSitePasswordString the userSitePasswordString to set
+	 */
+	public void setUserSitePasswordString(String userSitePasswordString) {
+		this.userSitePasswordString = userSitePasswordString;
+	}
+	/**
+	 * @return the userSiteNameString
+	 */
+	public String getUserSiteNameString() {
+		return userSiteNameString;
+	}
+	/**
+	 * @param userSiteNameString the userSiteNameString to set
+	 */
+	public void setUserSiteNameString(String userSiteNameString) {
+		this.userSiteNameString = userSiteNameString;
+	}
 	/**
 	 * @return the siteID
 	 */
@@ -84,26 +108,26 @@ public class UserDataClass implements java.io.Serializable {
 	/**
 	 * @return the userPasswordString
 	 */
-	public String getUserPasswordString() {
-		return userPasswordString;
+	public char[] getUserPasswordCharAr() {
+		return userPasswordCharAr;
 	}
 	/**
 	 * @return the userSaltByte
 	 */
-	public byte[] getUserSaltByte() {
-		return userSaltByte;
+	public String getUserSaltString() {
+		return userSaltString;
 	}
 	/**
 	 * @param userSaltByte the userSaltByte to set
 	 */
-	public void setUserSaltByte(byte[] userSaltByte) {
-		this.userSaltByte = userSaltByte;
+	public void setUserSaltString(String userSaltString) {
+		this.userSaltString = userSaltString;
 	}
 	/**
 	 * @param userPasswordString the userPasswordString to set
 	 */
-	public void setUserPasswordString(String userPasswordString) {
-		this.userPasswordString = userPasswordString;
+	public void setUserPasswordCharAr(char[] userPasswordCharAr) {
+		this.userPasswordCharAr = userPasswordCharAr;
 	}
 	/**
 	 * @return the gehashedesPasswordString
