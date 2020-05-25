@@ -22,15 +22,19 @@ import java.util.regex.Pattern;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import com.sun.xml.internal.fastinfoset.util.StringArray;
+
 import java.awt.Toolkit;
 
-public class PasswordManagementSystem {
+public class SiteDataManagementSystem {
 	private static HashMap<Integer, String> buttonIdHashMap = new HashMap<>();
 	
 	public void addAccountToTheList(UserDataClass userDataClass, GridLayout centerButtonGridLayout,
-			JPanel buttonPanel, JFrame frame) 
+			JPanel buttonPanel, JFrame frame, JCheckBox edit) 
 	{
 		buttonPanel.setLayout(centerButtonGridLayout);
 		JButton accountButton = new JButton();
@@ -42,11 +46,17 @@ public class PasswordManagementSystem {
 		accountButton.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Integer accButtonNameInteger = Integer.parseInt(accountButton.getName());
-				findingThePasswordForTheAccount(accButtonNameInteger, userDataClass);
-				StringSelection selection = new StringSelection(userDataClass.getUserSitePasswordString());
-				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				clipboard.setContents(selection, selection);
+				if (edit.isSelected() == true) {
+					
+				}
+				else {
+					Integer accButtonNameInteger = Integer.parseInt(accountButton.getName());
+					findingThePasswordForTheAccount(accButtonNameInteger, userDataClass);
+					StringSelection selection = new StringSelection(
+							userDataClass.getUserSitePasswordString());
+					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					clipboard.setContents(selection, selection);								
+				}
 			}
 		});
 		buttonPanel.add(accountButton);
@@ -65,13 +75,8 @@ public class PasswordManagementSystem {
 		String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
 		String pathString = (file + "/Udata" + "/" + "Acc.data");
 		String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
-		Pattern regexFirstScanPatten = Pattern.compile("\\[(.*?)\\]");
-		Matcher match = regexFirstScanPatten.matcher(uDataString);
-		int count = 0;
-		while(match.find())
-			count++;
-		Integer siteID = count;
-		userDataClass.setSiteID(siteID);
+		getSiteIdFormDataLastMatch(userDataClass, uDataString);
+		int siteID = userDataClass.getSiteID();		
 		String encryptedAccountNameString = encrypt(userDataClass.getSiteUserNameString(), keyString);
 		String encryptedPwString = encrypt(userDataClass.getUserSitePasswordString(), keyString);
 		String encryptedSiteNameString = encrypt(userDataClass.getSiteNameString(), keyString + siteID);
@@ -97,7 +102,7 @@ public class PasswordManagementSystem {
 		
 	}
 	public void restoreAccountData (UserDataClass userDataClass, GridLayout centerButtonGridLayout,
-			JPanel buttonPanel, JFrame frame) 
+			JPanel buttonPanel, JFrame frame, JCheckBox edit) 
 	{
 		File file = new File(userDataClass.getUserNameString());
 		if(file.exists() == true)
@@ -118,7 +123,7 @@ public class PasswordManagementSystem {
 			userDataClass.setUserSitePasswordString(decrypt(decryptUserDataClass.getUserSitePasswordString(), keyString));
 			userDataClass.setSiteNameString(decrypt(decryptUserDataClass.getSiteNameString(), keyString + userDataClass.getSiteID()));
 			addAccountToTheList(userDataClass, 
-        			centerButtonGridLayout, buttonPanel, frame);
+        			centerButtonGridLayout, buttonPanel, frame, edit);
 			buttonIdHashMap.put(userDataClass.getSiteID(), decryptUserDataClass.getSiteNameString());
 			}
 		}
@@ -185,10 +190,7 @@ public class PasswordManagementSystem {
     }
     
     private void accSiteDataReader(UserDataClass decryptUserDataClass, String match) {
-    	Pattern siteIdPattern = Pattern.compile("SiteID:(.*?):SiteID");
-    	Matcher siteIdMatcher = siteIdPattern.matcher(match);
-    	siteIdMatcher.find();
-    	decryptUserDataClass.setSiteID(Integer.parseInt(siteIdMatcher.group(1)));
+    	getSiteIdFormData(decryptUserDataClass, match);
     	
     	Pattern siteAccPattern = Pattern.compile("Acc:(.*?):Acc");
     	Matcher siteAccMatcher = siteAccPattern.matcher(match);
@@ -205,6 +207,27 @@ public class PasswordManagementSystem {
     	siteNameMatcher.find();
     	decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
 	}
+    
+    
+	public void getSiteIdFormData(UserDataClass decryptUserDataClass, String match) {
+		Pattern siteIdPattern = Pattern.compile("SiteID:(.*?):SiteID");
+    	Matcher siteIdMatcher = siteIdPattern.matcher(match);
+    	siteIdMatcher.find();
+    	decryptUserDataClass.setSiteID(Integer.parseInt(siteIdMatcher.group(1)));
+	}
+	
+	public void getSiteIdFormDataLastMatch(UserDataClass UserDataClass, String match) {
+		Pattern siteIdPattern = Pattern.compile("SiteID:(.*?):SiteID");
+		Matcher siteIdMatcher = siteIdPattern.matcher(match);
+		StringArray siteIds = new StringArray(); 
+		siteIds.add("0");
+			while (siteIdMatcher.find())
+			{
+				siteIds.add(siteIdMatcher.group(1));				
+			}
+			UserDataClass.setSiteID(Integer.parseInt(siteIds.get(siteIds.getSize() - 1)) + 1);	
+		}	
+     
     
     private void findingThePasswordForTheAccount(int buttonId, UserDataClass userDataClass) {
     	File file = new File(userDataClass.getUserNameString());

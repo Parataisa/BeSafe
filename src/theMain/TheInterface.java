@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -28,6 +29,8 @@ public class TheInterface {
 	private JTextField userName;
 	private JPasswordField userPassword;
 	
+	
+	/** Logged in Interface*/
 	public TheInterface(UserDataClass userDataClass) {
 		
 			if (userDataClass.isLogin()) {
@@ -54,13 +57,15 @@ public class TheInterface {
 				/** */
 				
 				/**Tool bar at the bottom, of the Frame */
+				JLabel accountSiteLabel = new JLabel("For which Site: ");
 		        JLabel acccountNameLabel = new JLabel("Accountname: ");
 		        JLabel acccountPasswordLabel = new JLabel("Accountpassword: ");
-		        JLabel accountSiteLabel = new JLabel("For which Site: ");
 		        
+		        JTextField accountSitetf = new JTextField(20);
 		        JTextField accountNametf = new JTextField(20);
 		        JTextField accountPasswordPwf = new JTextField(20);
-		        JTextField accountSitetf = new JTextField(20);
+		        
+		        JCheckBox editBox = new JCheckBox("Edit", false);
 
 		        /** */
 		        
@@ -68,25 +73,30 @@ public class TheInterface {
 		        GridLayout centerButtonGridLayout = new GridLayout(10, 10);
 		        JButton add = new JButton("add");
 		        JPanel buttonPanel = new JPanel();
-		        PasswordManagementSystem addAccWithAddButton = new PasswordManagementSystem();    
-		        	addAccWithAddButton.restoreAccountData(userDataClass, centerButtonGridLayout, buttonPanel, frame);
+		        SiteDataManagementSystem addAccWithAddButton = new SiteDataManagementSystem();    
+		        	addAccWithAddButton.restoreAccountData(
+		        			userDataClass, centerButtonGridLayout, buttonPanel, frame, editBox);
 		        add.addActionListener(new ActionListener() {				
 					@Override
 					public void actionPerformed(ActionEvent e1) {
-							userDataClass.setSiteNameString(accountSitetf.getText());
+							if (emptyCheck(accountSitetf, accountNametf, accountPasswordPwf))
+							{
+								userDataClass.setSiteNameString(accountSitetf.getText());
 							userDataClass.setSiteUserNameString(accountNametf.getText());
 							userDataClass.setUserSitePasswordString(accountPasswordPwf.getText());
 							addAccWithAddButton.storeAccountLocally(userDataClass);
 							addAccWithAddButton.addAccountToTheList(userDataClass,
-									centerButtonGridLayout, buttonPanel, frame);
+									centerButtonGridLayout, buttonPanel, frame, editBox);
 							accountNametf.setText("");
 							accountPasswordPwf.setText("");
 							accountSitetf.setText("");	
+							}
+							else {
+								System.out.println("One of the Data were null!");
+							}
 					}
-		        });
-		        
-		        /** */
-		        
+		        });		        
+		        /** */		        
 		        JButton cancel = new JButton("Cancel");
 		        cancel.addActionListener(new ActionListener() {	     
 					@Override
@@ -96,6 +106,8 @@ public class TheInterface {
 							accountSitetf.setText("");								
 					}
 				}); 
+		          
+		        
 		        panel.add(accountSiteLabel);
 		        panel.add(accountSitetf);
 		        panel.add(acccountNameLabel);
@@ -104,14 +116,10 @@ public class TheInterface {
 		        panel.add(accountPasswordPwf);
 		        panel.add(add);
 		        panel.add(cancel);
+		        panel.add(editBox);
 		        frame.getContentPane().add(BorderLayout.SOUTH, panel);
 		        
-		        
-		        
-		        
-		        
-		        
-		          
+              
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setTitle("BeSafe");
 				URL iconUrl = getClass().getResource("/BSIcon.png");
@@ -119,6 +127,9 @@ public class TheInterface {
 				frame.setIconImage(icon.getImage());
 				frame.setVisible(true);
 			}
+			
+			
+			/** Start Interface*/
 			else if (userDataClass.isLogin() == false) {	
 				panel = new JPanel();
 				frame = new JFrame();
@@ -196,12 +207,25 @@ public class TheInterface {
 				frame.setIconImage(icon.getImage());
 				frame.setVisible(true);
 			}		
-			else {
-				System.out.println("Something went wrong!");
-			}
 			
 	}
-
-
-	 
-}
+	private boolean emptyCheck (JTextField site, JTextField acc, JTextField pw)
+	{
+		if (site.getText().isEmpty()) {
+			System.out.println("No sitename");
+			return false;
+		}
+		else if (acc.getText().isEmpty()) {
+			System.out.println("No Accountname");
+			return false;
+		}
+		else if (pw.getText().isEmpty()) {
+			System.out.println("No password");
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	}

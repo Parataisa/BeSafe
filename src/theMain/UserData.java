@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 
-public class UserData extends PasswordControll {
+public class UserData extends LoginPasswordControll {
 
 	void saveUserData(char[] userPassword, String userName) {
 		try {
@@ -53,7 +53,7 @@ public class UserData extends PasswordControll {
 				return false;
 			}
 			else if (file.exists()) {
-				saltGettingMethode(userName, userDataSet);
+				userDataFetch(userName, userDataSet);
 				char[] savedUserPasswordChar = userDataSet.getUserPasswordCharAr();
 				String savedSalt =	userDataSet.getUserSaltString();		
 				boolean passwordCheck;
@@ -78,7 +78,7 @@ public class UserData extends PasswordControll {
 		}
 		
 		
-		void saltGettingMethode(String userName, UserDataClass userDataClass) throws URISyntaxException, IOException
+		void userDataFetch(String userName, UserDataClass userDataClass) throws URISyntaxException, IOException
 		{
 			File file = new File(userName + "/salt.txt");
 			File fileU = new File(userName + "/data.txt");

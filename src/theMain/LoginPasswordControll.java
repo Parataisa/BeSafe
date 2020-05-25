@@ -10,7 +10,7 @@ import java.util.Random;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-public class PasswordControll{
+public class LoginPasswordControll{
 	
 	UserDataClass userDataSet = new UserDataClass();
     private static final Random RANDOM = new SecureRandom();
