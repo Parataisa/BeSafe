@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -21,10 +22,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 import com.sun.xml.internal.fastinfoset.util.StringArray;
 
@@ -47,7 +53,42 @@ public class SiteDataManagementSystem {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (edit.isSelected() == true) {
+					JPanel editPanel = new JPanel();
+					JFrame editFrame = new JFrame();
 					
+					JLabel editSiteLabel = new JLabel("Site: ");
+			        JLabel editNameLabel = new JLabel("Accountname: ");
+			        JLabel editPasswordLabel = new JLabel("Accountpassword: ");
+			        
+			        JTextField editSitetf = new JTextField(20);
+			        JTextField editNametf = new JTextField(20);
+			        JTextField editPasswordPwf = new JTextField(20);
+					
+			        JButton editSaveButton = new JButton("Save");
+			        JButton editCancelButton = new JButton("Cancel");
+			        
+			        GridLayout editGridLayout = new GridLayout(4,2);
+			        
+			        editPanel.setLayout(editGridLayout);
+			        editPanel.add(editSiteLabel);
+			        editPanel.add(editSitetf);
+			        editPanel.add(editNameLabel);
+			        editPanel.add(editNametf);
+			        editPanel.add(editPasswordLabel);
+			        editPanel.add(editPasswordPwf);
+			        editPanel.add(editSaveButton);
+			        editPanel.add(editCancelButton);
+			        
+			        editFrame.getContentPane().add(BorderLayout.CENTER, editPanel);
+			        editFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			        editFrame.setTitle("BeSafe");
+					URL iconUrl = getClass().getResource("/BSIcon.png");
+					ImageIcon icon = new ImageIcon(iconUrl);
+					editPanel.setBorder(BorderFactory.createEmptyBorder(15,5,15,5));
+					editFrame.setSize(400, 200);
+					editFrame.setLocationRelativeTo(null);
+					editFrame.setIconImage(icon.getImage());
+					editFrame.setVisible(true);
 				}
 				else {
 					Integer accButtonNameInteger = Integer.parseInt(accountButton.getName());
@@ -89,7 +130,10 @@ public class SiteDataManagementSystem {
 						 "Pw:" + encryptedPwString + ":Pw" +  
 						 "Site:" + encryptedSiteNameString + ":Site]");
 			writer.close();
-			buttonIdHashMap.put(userDataClass.getSiteID(), encryptedSiteNameString);
+			buttonIdHashMap.put(userDataClass.getSiteID(),
+							"[Acc:" + userDataClass.getSiteUserNameString() + ":Acc" +
+							 "Pw:" + userDataClass.getUserSitePasswordString() + ":Pw" +  
+							 "Site:" + userDataClass.getSiteNameString() + ":Site]");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,7 +168,10 @@ public class SiteDataManagementSystem {
 			userDataClass.setSiteNameString(decrypt(decryptUserDataClass.getSiteNameString(), keyString + userDataClass.getSiteID()));
 			addAccountToTheList(userDataClass, 
         			centerButtonGridLayout, buttonPanel, frame, edit);
-			buttonIdHashMap.put(userDataClass.getSiteID(), decryptUserDataClass.getSiteNameString());
+			buttonIdHashMap.put(userDataClass.getSiteID(), 
+							"[Acc:" + userDataClass.getUserSiteNameString() + ":Acc" +
+							 "Pw:" + userDataClass.getUserSitePasswordString() + ":Pw"+
+							 "Site:" + userDataClass.getSiteNameString() + ":Site]");
 			}
 		}
 		catch (Exception e) {
