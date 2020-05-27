@@ -53,6 +53,8 @@ public class SiteDataManagementSystem {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (edit.isSelected() == true) {
+					UserDataClass buttonDataClass = new UserDataClass();
+					
 					JPanel editPanel = new JPanel();
 					JFrame editFrame = new JFrame();
 					
@@ -62,7 +64,7 @@ public class SiteDataManagementSystem {
 			        
 			        JTextField editSitetf = new JTextField(20);
 			        JTextField editNametf = new JTextField(20);
-			        JTextField editPasswordPwf = new JTextField(20);
+			        JTextField editPasswordtf = new JTextField(20);
 					
 			        JButton editSaveButton = new JButton("Save");
 			        JButton editCancelButton = new JButton("Cancel");
@@ -75,9 +77,22 @@ public class SiteDataManagementSystem {
 			        editPanel.add(editNameLabel);
 			        editPanel.add(editNametf);
 			        editPanel.add(editPasswordLabel);
-			        editPanel.add(editPasswordPwf);
+			        editPanel.add(editPasswordtf);
 			        editPanel.add(editSaveButton);
 			        editPanel.add(editCancelButton);
+	        
+			        Integer editButtonInteger = Integer.parseInt(accountButton.getName());
+			        String savedAccDataString = buttonIdHashMap.get(editButtonInteger);
+			        accSiteDataReaderFromHashMap(buttonDataClass, savedAccDataString);
+			        
+			        int siteIdString = buttonDataClass.getSiteID();
+			        String siteNameString = buttonDataClass.getSiteNameString();
+			        String userNameString = buttonDataClass.getSiteUserNameString();
+			        String sitePasswordString = buttonDataClass.getUserSitePasswordString();
+			        editSitetf.setText(siteNameString);
+			        editNametf.setText(userNameString);
+			        editPasswordtf.setText(sitePasswordString);
+			        
 			        
 			        editFrame.getContentPane().add(BorderLayout.CENTER, editPanel);
 			        editFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -89,6 +104,69 @@ public class SiteDataManagementSystem {
 					editFrame.setLocationRelativeTo(null);
 					editFrame.setIconImage(icon.getImage());
 					editFrame.setVisible(true);
+					
+					editSaveButton.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent s) {
+							if (editSitetf.getText().equals(siteNameString) 
+									&& editNametf.getText().equals(userNameString)
+									&& editPasswordtf.getText().equals(sitePasswordString)) {
+								editFrame.dispose();
+							}
+							else {
+								String newSiteNameString = editSitetf.getText();
+						        String newUserNameString = editNametf.getText();
+						        String newSitePasswordString = editPasswordtf.getText();
+						        String compientData  = "Acc:" + newUserNameString + ":Acc" +
+										 "Pw:" + newSitePasswordString + ":Pw" +  
+										 "Site:" + newSiteNameString + ":Site";
+						        buttonIdHashMap.replace(editButtonInteger, compientData);			        
+						        File file = new File(userDataClass.getUserNameString());
+						    	if(file.exists() == true)
+						    	{
+						    	try {
+						    		String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
+						    		String pathString = (file + "/Udata" + "/" + "Acc.data");
+						    		String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));	
+						    		String newEncryptedAccountNameString = encrypt(newUserNameString, keyString);
+						    		String newEncryptedPwString = encrypt(newSitePasswordString, keyString);
+						    		String newEncryptedSiteNameString = encrypt(newSiteNameString, keyString + editButtonInteger);	
+						    		String newData = ("[SiteID:" + editButtonInteger + ":SiteID" + 
+						    				"Acc:" + newEncryptedAccountNameString + ":Acc" +
+						    				"Pw:" + newEncryptedPwString + ":Pw" +  
+						    				"Site:" + newEncryptedSiteNameString + ":Site]");
+						    		String newString = "";
+									Pattern regexPatten = Pattern.compile("\\[SiteID:"+editButtonInteger+"(.*?):Site\\]");
+									Matcher match = regexPatten.matcher(uDataString);
+									while (match.find())
+									{	
+										newString = uDataString.replaceAll("\\[SiteID:"+editButtonInteger+"(.*?):Site\\]", newData);
+										System.out.println(match.group());
+										System.out.println(newString);
+										break;
+									}
+									FileWriter writer = new FileWriter(pathString);
+									writer.write(newString);
+									writer.close();
+									accountButton.setText(newSiteNameString);
+									editFrame.dispose();
+									
+						    	}
+						    	catch (Exception e) {
+						    		editFrame.dispose();
+						    	}
+								}
+						}
+					}
+					});
+					
+					editCancelButton.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent c) {
+							editFrame.dispose();
+						}
+					});
 				}
 				else {
 					Integer accButtonNameInteger = Integer.parseInt(accountButton.getName());
@@ -255,7 +333,22 @@ public class SiteDataManagementSystem {
     	decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
 	}
     
-    
+    private void accSiteDataReaderFromHashMap(UserDataClass decryptUserDataClass, String match) {	
+    	Pattern siteAccPattern = Pattern.compile("Acc:(.*?):Acc");
+    	Matcher siteAccMatcher = siteAccPattern.matcher(match);
+    	siteAccMatcher.find();
+    	decryptUserDataClass.setSiteUserNameString(siteAccMatcher.group(1));
+    	
+    	Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
+    	Matcher sitePwMatcher = sitePwPattern.matcher(match);
+    	sitePwMatcher.find();
+    	decryptUserDataClass.setUserSitePasswordString(sitePwMatcher.group(1));
+    	
+    	Pattern siteNamePattern = Pattern.compile("Site:(.*?):Site");
+    	Matcher siteNameMatcher = siteNamePattern.matcher(match);
+    	siteNameMatcher.find();
+    	decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
+    }
 	public void getSiteIdFormData(UserDataClass decryptUserDataClass, String match) {
 		Pattern siteIdPattern = Pattern.compile("SiteID:(.*?):SiteID");
     	Matcher siteIdMatcher = siteIdPattern.matcher(match);
