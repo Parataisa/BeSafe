@@ -38,10 +38,9 @@ import java.awt.Toolkit;
 
 public class SiteDataManagementSystem {
 	private static HashMap<Integer, String> buttonIdHashMap = new HashMap<>();
-	
-	public void addAccountToTheList(UserDataClass userDataClass, GridLayout centerButtonGridLayout,
-			JPanel buttonPanel, JFrame frame, JCheckBox edit) 
-	{
+
+	public void addAccountToTheList(UserDataClass userDataClass, GridLayout centerButtonGridLayout, JPanel buttonPanel,
+			JFrame frame, JCheckBox edit) {
 		buttonPanel.setLayout(centerButtonGridLayout);
 		JButton accountButton = new JButton();
 		Integer siteIdInt = userDataClass.getSiteID();
@@ -49,132 +48,124 @@ public class SiteDataManagementSystem {
 		accountButton.setName(siteIdAsString);
 		accountButton.setText(userDataClass.getSiteNameString());
 		accountButton.setSize(250, 100);
-		accountButton.addActionListener(new ActionListener() {			
+		accountButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (edit.isSelected() == true) {
 					UserDataClass buttonDataClass = new UserDataClass();
-					
+
 					JPanel editPanel = new JPanel();
 					JFrame editFrame = new JFrame();
-					
+
 					JLabel editSiteLabel = new JLabel("Site: ");
-			        JLabel editNameLabel = new JLabel("Accountname: ");
-			        JLabel editPasswordLabel = new JLabel("Accountpassword: ");
-			        
-			        JTextField editSitetf = new JTextField(20);
-			        JTextField editNametf = new JTextField(20);
-			        JTextField editPasswordtf = new JTextField(20);
-					
-			        JButton editSaveButton = new JButton("Save");
-			        JButton editCancelButton = new JButton("Cancel");
-			        
-			        GridLayout editGridLayout = new GridLayout(4,2);
-			        
-			        editPanel.setLayout(editGridLayout);
-			        editPanel.add(editSiteLabel);
-			        editPanel.add(editSitetf);
-			        editPanel.add(editNameLabel);
-			        editPanel.add(editNametf);
-			        editPanel.add(editPasswordLabel);
-			        editPanel.add(editPasswordtf);
-			        editPanel.add(editSaveButton);
-			        editPanel.add(editCancelButton);
-	        
-			        Integer editButtonInteger = Integer.parseInt(accountButton.getName());
-			        String savedAccDataString = buttonIdHashMap.get(editButtonInteger);
-			        accSiteDataReaderFromHashMap(buttonDataClass, savedAccDataString);
-			        
-			        int siteIdString = buttonDataClass.getSiteID();
-			        String siteNameString = buttonDataClass.getSiteNameString();
-			        String userNameString = buttonDataClass.getSiteUserNameString();
-			        String sitePasswordString = buttonDataClass.getUserSitePasswordString();
-			        editSitetf.setText(siteNameString);
-			        editNametf.setText(userNameString);
-			        editPasswordtf.setText(sitePasswordString);
-			        
-			        
-			        editFrame.getContentPane().add(BorderLayout.CENTER, editPanel);
-			        editFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			        editFrame.setTitle("BeSafe");
+					JLabel editNameLabel = new JLabel("Accountname: ");
+					JLabel editPasswordLabel = new JLabel("Accountpassword: ");
+
+					JTextField editSitetf = new JTextField(20);
+					JTextField editNametf = new JTextField(20);
+					JTextField editPasswordtf = new JTextField(20);
+
+					JButton editSaveButton = new JButton("Save");
+					JButton editCancelButton = new JButton("Cancel");
+
+					GridLayout editGridLayout = new GridLayout(4, 2);
+
+					editPanel.setLayout(editGridLayout);
+					editPanel.add(editSiteLabel);
+					editPanel.add(editSitetf);
+					editPanel.add(editNameLabel);
+					editPanel.add(editNametf);
+					editPanel.add(editPasswordLabel);
+					editPanel.add(editPasswordtf);
+					editPanel.add(editSaveButton);
+					editPanel.add(editCancelButton);
+
+					Integer editButtonInteger = Integer.parseInt(accountButton.getName());
+					String savedAccDataString = buttonIdHashMap.get(editButtonInteger);
+					accSiteDataReaderFromHashMap(buttonDataClass, savedAccDataString);
+					String siteNameString = buttonDataClass.getSiteNameString();
+					String userNameString = buttonDataClass.getSiteUserNameString();
+					String sitePasswordString = buttonDataClass.getUserSitePasswordString();
+					editSitetf.setText(siteNameString);
+					editNametf.setText(userNameString);
+					editPasswordtf.setText(sitePasswordString);
+
+					editFrame.getContentPane().add(BorderLayout.CENTER, editPanel);
+					editFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+					editFrame.setTitle("BeSafe");
 					URL iconUrl = getClass().getResource("/BSIcon.png");
 					ImageIcon icon = new ImageIcon(iconUrl);
-					editPanel.setBorder(BorderFactory.createEmptyBorder(15,5,15,5));
+					editPanel.setBorder(BorderFactory.createEmptyBorder(15, 5, 15, 5));
 					editFrame.setSize(400, 200);
 					editFrame.setLocationRelativeTo(null);
 					editFrame.setIconImage(icon.getImage());
 					editFrame.setVisible(true);
-					
 					editSaveButton.addActionListener(new ActionListener() {
-						
 						@Override
 						public void actionPerformed(ActionEvent s) {
-							if (editSitetf.getText().equals(siteNameString) 
+							if (editSitetf.getText().equals(siteNameString)
 									&& editNametf.getText().equals(userNameString)
 									&& editPasswordtf.getText().equals(sitePasswordString)) {
 								editFrame.dispose();
-							}
-							else {
+							} else {
 								String newSiteNameString = editSitetf.getText();
-						        String newUserNameString = editNametf.getText();
-						        String newSitePasswordString = editPasswordtf.getText();
-						        String compientData  = "Acc:" + newUserNameString + ":Acc" +
-										 "Pw:" + newSitePasswordString + ":Pw" +  
-										 "Site:" + newSiteNameString + ":Site";
-						        buttonIdHashMap.replace(editButtonInteger, compientData);			        
-						        File file = new File(userDataClass.getUserNameString());
-						    	if(file.exists() == true)
-						    	{
-						    	try {
-						    		String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
-						    		String pathString = (file + "/Udata" + "/" + "Acc.data");
-						    		String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));	
-						    		String newEncryptedAccountNameString = encrypt(newUserNameString, keyString);
-						    		String newEncryptedPwString = encrypt(newSitePasswordString, keyString);
-						    		String newEncryptedSiteNameString = encrypt(newSiteNameString, keyString + editButtonInteger);	
-						    		String newData = ("[SiteID:" + editButtonInteger + ":SiteID" + 
-						    				"Acc:" + newEncryptedAccountNameString + ":Acc" +
-						    				"Pw:" + newEncryptedPwString + ":Pw" +  
-						    				"Site:" + newEncryptedSiteNameString + ":Site]");
-						    		String newString = "";
-									Pattern regexPatten = Pattern.compile("\\[SiteID:"+editButtonInteger+"(.*?):Site\\]");
-									Matcher match = regexPatten.matcher(uDataString);
-									while (match.find())
-									{	
-										newString = uDataString.replaceAll("\\[SiteID:"+editButtonInteger+"(.*?):Site\\]", newData);
-										System.out.println(match.group());
-										System.out.println(newString);
-										break;
+								String newUserNameString = editNametf.getText();
+								String newSitePasswordString = editPasswordtf.getText();
+								String compientData = "Acc:" + newUserNameString + ":Acc" + "Pw:"
+										+ newSitePasswordString + ":Pw" + "Site:" + newSiteNameString + ":Site";
+								buttonIdHashMap.replace(editButtonInteger, compientData);
+								File file = new File(userDataClass.getUserNameString());
+								if (file.exists() == true) {
+									try {
+										String keyString = new String(
+												Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
+										String pathString = (file + "/Udata" + "/" + "Acc.data");
+										String uDataString = new String(
+												Files.readAllBytes(Paths.get(pathString.toString())));
+										String newEncryptedAccountNameString = encrypt(newUserNameString, keyString);
+										String newEncryptedPwString = encrypt(newSitePasswordString, keyString);
+										String newEncryptedSiteNameString = encrypt(newSiteNameString,
+												keyString + editButtonInteger);
+										String newData = ("[SiteID:" + editButtonInteger + ":SiteID" + "Acc:"
+												+ newEncryptedAccountNameString + ":Acc" + "Pw:" + newEncryptedPwString
+												+ ":Pw" + "Site:" + newEncryptedSiteNameString + ":Site]");
+										String newString = "";
+										Pattern regexPatten = Pattern
+												.compile("\\[SiteID:" + editButtonInteger + "(.*?):Site\\]");
+										Matcher match = regexPatten.matcher(uDataString);
+										while (match.find()) {
+											newString = uDataString.replaceAll(
+													"\\[SiteID:" + editButtonInteger + "(.*?):Site\\]", newData);
+											System.out.println(match.group());
+											System.out.println(newString);
+											break;
+										}
+										FileWriter writer = new FileWriter(pathString);
+										writer.write(newString);
+										writer.close();
+										accountButton.setText(newSiteNameString);
+										editFrame.dispose();
+
+									} catch (Exception e) {
+										editFrame.dispose();
 									}
-									FileWriter writer = new FileWriter(pathString);
-									writer.write(newString);
-									writer.close();
-									accountButton.setText(newSiteNameString);
-									editFrame.dispose();
-									
-						    	}
-						    	catch (Exception e) {
-						    		editFrame.dispose();
-						    	}
 								}
+							}
 						}
-					}
 					});
-					
+
 					editCancelButton.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent c) {
 							editFrame.dispose();
 						}
 					});
-				}
-				else {
+				} else {
 					Integer accButtonNameInteger = Integer.parseInt(accountButton.getName());
 					findingThePasswordForTheAccount(accButtonNameInteger, userDataClass);
-					StringSelection selection = new StringSelection(
-							userDataClass.getUserSitePasswordString());
+					StringSelection selection = new StringSelection(userDataClass.getUserSitePasswordString());
 					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-					clipboard.setContents(selection, selection);								
+					clipboard.setContents(selection, selection);
 				}
 			}
 		});
@@ -185,216 +176,194 @@ public class SiteDataManagementSystem {
 		frame.revalidate();
 		frame.repaint();
 	}
-	public void storeAccountLocally(UserDataClass userDataClass) 
-	{
-	File file = new File(userDataClass.getUserNameString());
-	if(file.exists() == true)
-	{
-	try {
-		String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
-		String pathString = (file + "/Udata" + "/" + "Acc.data");
-		String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
-		getSiteIdFormDataLastMatch(userDataClass, uDataString);
-		int siteID = userDataClass.getSiteID();		
-		String encryptedAccountNameString = encrypt(userDataClass.getSiteUserNameString(), keyString);
-		String encryptedPwString = encrypt(userDataClass.getUserSitePasswordString(), keyString);
-		String encryptedSiteNameString = encrypt(userDataClass.getSiteNameString(), keyString + siteID);
-		try {
-			File appendFileCheck = new File(pathString);
-			boolean appendToFile = appendFileCheck.exists();
-			FileWriter writer = new FileWriter(pathString, appendToFile);
-			writer.write("[SiteID:" + siteID + ":SiteID" + 
-						 "Acc:" + encryptedAccountNameString + ":Acc" +
-						 "Pw:" + encryptedPwString + ":Pw" +  
-						 "Site:" + encryptedSiteNameString + ":Site]");
-			writer.close();
-			buttonIdHashMap.put(userDataClass.getSiteID(),
-							"[Acc:" + userDataClass.getSiteUserNameString() + ":Acc" +
-							 "Pw:" + userDataClass.getUserSitePasswordString() + ":Pw" +  
-							 "Site:" + userDataClass.getSiteNameString() + ":Site]");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			}
-		
-	} catch (Exception e) {
-		// TODO: handle exception
-	}
-	}	
-		
-	}
-	public void restoreAccountData (UserDataClass userDataClass, GridLayout centerButtonGridLayout,
-			JPanel buttonPanel, JFrame frame, JCheckBox edit) 
-	{
+	public void storeAccountLocally(UserDataClass userDataClass) {
 		File file = new File(userDataClass.getUserNameString());
-		if(file.exists() == true)
-		{
-		try {
-			String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
-			UserDataClass decryptUserDataClass = new UserDataClass();			
-			String pathString = (file + "/Udata" + "/" + "Acc.data");
-			String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
-			Pattern regexFirstScanPatten = Pattern.compile("\\[(.*?)\\]");
-			Matcher match = regexFirstScanPatten.matcher(uDataString);
-			while (match.find())
-			{
-			System.out.println(match.group(1));
-			accSiteDataReader(decryptUserDataClass, match.group(1));
-			userDataClass.setSiteID(decryptUserDataClass.getSiteID());
-			userDataClass.setSiteUserNameString(decrypt(decryptUserDataClass.getSiteUserNameString(), keyString));
-			userDataClass.setUserSitePasswordString(decrypt(decryptUserDataClass.getUserSitePasswordString(), keyString));
-			userDataClass.setSiteNameString(decrypt(decryptUserDataClass.getSiteNameString(), keyString + userDataClass.getSiteID()));
-			addAccountToTheList(userDataClass, 
-        			centerButtonGridLayout, buttonPanel, frame, edit);
-			buttonIdHashMap.put(userDataClass.getSiteID(), 
-							"[Acc:" + userDataClass.getUserSiteNameString() + ":Acc" +
-							 "Pw:" + userDataClass.getUserSitePasswordString() + ":Pw"+
-							 "Site:" + userDataClass.getSiteNameString() + ":Site]");
+		if (file.exists() == true) {
+			try {
+				String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
+				String pathString = (file + "/Udata" + "/" + "Acc.data");
+				String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
+				getSiteIdFormDataLastMatch(userDataClass, uDataString);
+				int siteID = userDataClass.getSiteID();
+				String encryptedAccountNameString = encrypt(userDataClass.getSiteUserNameString(), keyString);
+				String encryptedPwString = encrypt(userDataClass.getUserSitePasswordString(), keyString);
+				String encryptedSiteNameString = encrypt(userDataClass.getSiteNameString(), keyString + siteID);
+				try {
+					File appendFileCheck = new File(pathString);
+					boolean appendToFile = appendFileCheck.exists();
+					FileWriter writer = new FileWriter(pathString, appendToFile);
+					writer.write("[SiteID:" + siteID + ":SiteID" + "Acc:" + encryptedAccountNameString + ":Acc" + "Pw:"
+							+ encryptedPwString + ":Pw" + "Site:" + encryptedSiteNameString + ":Site]");
+					writer.close();
+					buttonIdHashMap.put(userDataClass.getSiteID(),
+							"[Acc:" + userDataClass.getSiteUserNameString() + ":Acc" + "Pw:"
+									+ userDataClass.getUserSitePasswordString() + ":Pw" + "Site:"
+									+ userDataClass.getSiteNameString() + ":Site]");
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
 		}
-		catch (Exception e) {
-			// TODO: handle exception
-		}
+
+	}
+
+	public void restoreAccountData(UserDataClass userDataClass, GridLayout centerButtonGridLayout, JPanel buttonPanel,
+			JFrame frame, JCheckBox edit) {
+		File file = new File(userDataClass.getUserNameString());
+		if (file.exists() == true) {
+			try {
+				String keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
+				UserDataClass decryptUserDataClass = new UserDataClass();
+				String pathString = (file + "/Udata" + "/" + "Acc.data");
+				String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
+				Pattern regexFirstScanPatten = Pattern.compile("\\[(.*?)\\]");
+				Matcher match = regexFirstScanPatten.matcher(uDataString);
+				while (match.find()) {
+					System.out.println(match.group(1));
+					accSiteDataReader(decryptUserDataClass, match.group(1));
+					userDataClass.setSiteID(decryptUserDataClass.getSiteID());
+					userDataClass
+							.setSiteUserNameString(decrypt(decryptUserDataClass.getSiteUserNameString(), keyString));
+					userDataClass.setUserSitePasswordString(
+							decrypt(decryptUserDataClass.getUserSitePasswordString(), keyString));
+					userDataClass.setSiteNameString(
+							decrypt(decryptUserDataClass.getSiteNameString(), keyString + userDataClass.getSiteID()));
+					addAccountToTheList(userDataClass, centerButtonGridLayout, buttonPanel, frame, edit);
+					buttonIdHashMap.put(userDataClass.getSiteID(),
+							"[Acc:" + userDataClass.getUserSiteNameString() + ":Acc" + "Pw:"
+									+ userDataClass.getUserSitePasswordString() + ":Pw" + "Site:"
+									+ userDataClass.getSiteNameString() + ":Site]");
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 		}
 	}
 
-	
-    private static SecretKeySpec secretKey;
-    private static byte[] key;
-    public static void setKey(String myKey) 
-    {
-        MessageDigest sha = null;
-        try {
-            key = myKey.getBytes("UTF-8");
-            sha = MessageDigest.getInstance("SHA-1");
-            key = sha.digest(key);
-            key = Arrays.copyOf(key, 16); 
-            secretKey = new SecretKeySpec(key, "AES");
-        } 
-        catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } 
-        catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    
-    public static String encrypt(String strToEncrypt, String secret) 
-    {
-        try
-        {
-            setKey(secret);
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
-        } 
-        catch (Exception e) 
-        {
-            System.out.println("Error while encrypting: " + e.toString());
-        }
-        return null;
-    }
- 
-    
-    
-    public static String decrypt(String strToDecrypt, String secret) 
-    {
-        try
-        {
-            setKey(secret);
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
-        } 
-        catch (Exception e) 
-        {
-            System.out.println("Error while decrypting: " + e.toString());
-        }
-        return null;
-    }
-    
-    private void accSiteDataReader(UserDataClass decryptUserDataClass, String match) {
-    	getSiteIdFormData(decryptUserDataClass, match);
-    	
-    	Pattern siteAccPattern = Pattern.compile("Acc:(.*?):Acc");
-    	Matcher siteAccMatcher = siteAccPattern.matcher(match);
-    	siteAccMatcher.find();
-    	decryptUserDataClass.setSiteUserNameString(siteAccMatcher.group(1));
-    	
-    	Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
-    	Matcher sitePwMatcher = sitePwPattern.matcher(match);
-    	sitePwMatcher.find();
-    	decryptUserDataClass.setUserSitePasswordString(sitePwMatcher.group(1));
-    	
-    	Pattern siteNamePattern = Pattern.compile("Site:(.*?):Site");
-    	Matcher siteNameMatcher = siteNamePattern.matcher(match);
-    	siteNameMatcher.find();
-    	decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
+	private static SecretKeySpec secretKey;
+	private static byte[] key;
+
+	public static void setKey(String myKey) {
+		MessageDigest sha = null;
+		try {
+			key = myKey.getBytes("UTF-8");
+			sha = MessageDigest.getInstance("SHA-1");
+			key = sha.digest(key);
+			key = Arrays.copyOf(key, 16);
+			secretKey = new SecretKeySpec(key, "AES");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
-    
-    private void accSiteDataReaderFromHashMap(UserDataClass decryptUserDataClass, String match) {	
-    	Pattern siteAccPattern = Pattern.compile("Acc:(.*?):Acc");
-    	Matcher siteAccMatcher = siteAccPattern.matcher(match);
-    	siteAccMatcher.find();
-    	decryptUserDataClass.setSiteUserNameString(siteAccMatcher.group(1));
-    	
-    	Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
-    	Matcher sitePwMatcher = sitePwPattern.matcher(match);
-    	sitePwMatcher.find();
-    	decryptUserDataClass.setUserSitePasswordString(sitePwMatcher.group(1));
-    	
-    	Pattern siteNamePattern = Pattern.compile("Site:(.*?):Site");
-    	Matcher siteNameMatcher = siteNamePattern.matcher(match);
-    	siteNameMatcher.find();
-    	decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
-    }
+
+	public static String encrypt(String strToEncrypt, String secret) {
+		try {
+			setKey(secret);
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+			return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+		} catch (Exception e) {
+			System.out.println("Error while encrypting: " + e.toString());
+		}
+		return null;
+	}
+
+	public static String decrypt(String strToDecrypt, String secret) {
+		try {
+			setKey(secret);
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+			cipher.init(Cipher.DECRYPT_MODE, secretKey);
+			return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
+		} catch (Exception e) {
+			System.out.println("Error while decrypting: " + e.toString());
+		}
+		return null;
+	}
+
+	private void accSiteDataReader(UserDataClass decryptUserDataClass, String match) {
+		getSiteIdFormData(decryptUserDataClass, match);
+
+		Pattern siteAccPattern = Pattern.compile("Acc:(.*?):Acc");
+		Matcher siteAccMatcher = siteAccPattern.matcher(match);
+		siteAccMatcher.find();
+		decryptUserDataClass.setSiteUserNameString(siteAccMatcher.group(1));
+
+		Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
+		Matcher sitePwMatcher = sitePwPattern.matcher(match);
+		sitePwMatcher.find();
+		decryptUserDataClass.setUserSitePasswordString(sitePwMatcher.group(1));
+
+		Pattern siteNamePattern = Pattern.compile("Site:(.*?):Site");
+		Matcher siteNameMatcher = siteNamePattern.matcher(match);
+		siteNameMatcher.find();
+		decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
+	}
+
+	private void accSiteDataReaderFromHashMap(UserDataClass decryptUserDataClass, String match) {
+		Pattern siteAccPattern = Pattern.compile("Acc:(.*?):Acc");
+		Matcher siteAccMatcher = siteAccPattern.matcher(match);
+		siteAccMatcher.find();
+		decryptUserDataClass.setSiteUserNameString(siteAccMatcher.group(1));
+
+		Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
+		Matcher sitePwMatcher = sitePwPattern.matcher(match);
+		sitePwMatcher.find();
+		decryptUserDataClass.setUserSitePasswordString(sitePwMatcher.group(1));
+
+		Pattern siteNamePattern = Pattern.compile("Site:(.*?):Site");
+		Matcher siteNameMatcher = siteNamePattern.matcher(match);
+		siteNameMatcher.find();
+		decryptUserDataClass.setSiteNameString(siteNameMatcher.group(1));
+	}
+
 	public void getSiteIdFormData(UserDataClass decryptUserDataClass, String match) {
 		Pattern siteIdPattern = Pattern.compile("SiteID:(.*?):SiteID");
-    	Matcher siteIdMatcher = siteIdPattern.matcher(match);
-    	siteIdMatcher.find();
-    	decryptUserDataClass.setSiteID(Integer.parseInt(siteIdMatcher.group(1)));
+		Matcher siteIdMatcher = siteIdPattern.matcher(match);
+		siteIdMatcher.find();
+		decryptUserDataClass.setSiteID(Integer.parseInt(siteIdMatcher.group(1)));
 	}
-	
+
 	public void getSiteIdFormDataLastMatch(UserDataClass UserDataClass, String match) {
 		Pattern siteIdPattern = Pattern.compile("SiteID:(.*?):SiteID");
 		Matcher siteIdMatcher = siteIdPattern.matcher(match);
-		StringArray siteIds = new StringArray(); 
+		StringArray siteIds = new StringArray();
 		siteIds.add("0");
-			while (siteIdMatcher.find())
-			{
-				siteIds.add(siteIdMatcher.group(1));				
-			}
-			UserDataClass.setSiteID(Integer.parseInt(siteIds.get(siteIds.getSize() - 1)) + 1);	
-		}	
-     
-    
-    private void findingThePasswordForTheAccount(int buttonId, UserDataClass userDataClass) {
-    	File file = new File(userDataClass.getUserNameString());
-		if(file.exists() == true)
-		{
+		while (siteIdMatcher.find()) {
+			siteIds.add(siteIdMatcher.group(1));
+		}
+		UserDataClass.setSiteID(Integer.parseInt(siteIds.get(siteIds.getSize() - 1)) + 1);
+	}
+
+	private void findingThePasswordForTheAccount(int buttonId, UserDataClass userDataClass) {
+		File file = new File(userDataClass.getUserNameString());
+		if (file.exists() == true) {
 			String keyString;
 			try {
 				keyString = new String(Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
 				String pathString = (file + "/Udata" + "/" + "Acc.data");
 				String uDataString = new String(Files.readAllBytes(Paths.get(pathString.toString())));
-				Pattern regexFirstScanPatten = Pattern.compile("\\[SiteID:"+ buttonId +"(.*?)\\]");
+				Pattern regexFirstScanPatten = Pattern.compile("\\[SiteID:" + buttonId + "(.*?)\\]");
 				Matcher match = regexFirstScanPatten.matcher(uDataString);
-				while (match.find())
-				{	
+				while (match.find()) {
 					System.out.println(match.group());
-			    	Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
-			    	Matcher sitePwMatcher = sitePwPattern.matcher(match.group(1));
-			    	sitePwMatcher.find();
-			    	String tempUserPasswordString = (sitePwMatcher.group(1));
+					Pattern sitePwPattern = Pattern.compile("Pw:(.*?):Pw");
+					Matcher sitePwMatcher = sitePwPattern.matcher(match.group(1));
+					sitePwMatcher.find();
+					String tempUserPasswordString = (sitePwMatcher.group(1));
 					userDataClass.setUserSitePasswordString(decrypt(tempUserPasswordString, keyString));
-					
+
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-    }
-    }
-
+	}
+}
