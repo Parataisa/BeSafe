@@ -27,7 +27,7 @@ public class LoginPasswordControll {
 		return returnValue;
 	}
 
-	public static byte[] hash(char[] userPassword, byte[] salt) {
+	private static byte[] hash(char[] userPassword, byte[] salt) {
 		PBEKeySpec spec = new PBEKeySpec(userPassword, salt, ITERATIONS, KEY_LENGTH);
 		Arrays.fill(userPassword, Character.MIN_VALUE);
 		try {

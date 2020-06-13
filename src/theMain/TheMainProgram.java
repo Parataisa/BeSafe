@@ -7,6 +7,6 @@ public class TheMainProgram {
 	}
 
 	public static void logginCheck(UserDataClass userDataClass) {
-		new TheInterface(userDataClass);
+		new LoggedInWindow(userDataClass);
 	}
 }

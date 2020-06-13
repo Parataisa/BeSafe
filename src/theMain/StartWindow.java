@@ -9,16 +9,16 @@ import java.net.URL;
 import javax.swing.*;
 
 public class StartWindow {
-	public JPanel panel;
-	public JFrame frame;
-	public JButton loggInBt;
-	public JButton registerUserBt;
-	public JTextField userName;
-	public JPasswordField userPassword;
+	private JPanel panel;
+	private JFrame frame;
+	private JButton loggInBt;
+	private JButton registerUserBt;
+	private JTextField userName;
+	private JPasswordField userPassword;
 	
 	public StartWindow(UserDataClass userDataClass) {	
-		JPanel panel = new JPanel();
-		JFrame frame = new JFrame();
+		panel = new JPanel();
+		frame = new JFrame();
 		userName = new JTextField();
 		userPassword = new JPasswordField();
 		userPassword.setEchoChar('*');

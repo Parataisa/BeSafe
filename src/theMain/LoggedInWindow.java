@@ -7,9 +7,9 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import javax.swing.*;
 
-public class TheInterface {
+public class LoggedInWindow {
 
-	public TheInterface(UserDataClass userDataClass) {
+	public LoggedInWindow(UserDataClass userDataClass) {
 			JPanel panel = new JPanel();
 			JFrame frame = new JFrame();
 			frame.setLocationRelativeTo(null);

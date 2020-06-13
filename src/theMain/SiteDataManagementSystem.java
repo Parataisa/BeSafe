@@ -52,115 +52,9 @@ public class SiteDataManagementSystem {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (edit.isSelected() == true) {
-					UserDataClass buttonDataClass = new UserDataClass();
-
-					JPanel editPanel = new JPanel();
-					JFrame editFrame = new JFrame();
-
-					JLabel editSiteLabel = new JLabel("Site: ");
-					JLabel editNameLabel = new JLabel("Accountname: ");
-					JLabel editPasswordLabel = new JLabel("Accountpassword: ");
-
-					JTextField editSitetf = new JTextField(20);
-					JTextField editNametf = new JTextField(20);
-					JTextField editPasswordtf = new JTextField(20);
-
-					JButton editSaveButton = new JButton("Save");
-					JButton editCancelButton = new JButton("Cancel");
-
-					GridLayout editGridLayout = new GridLayout(4, 2);
-
-					editPanel.setLayout(editGridLayout);
-					editPanel.add(editSiteLabel);
-					editPanel.add(editSitetf);
-					editPanel.add(editNameLabel);
-					editPanel.add(editNametf);
-					editPanel.add(editPasswordLabel);
-					editPanel.add(editPasswordtf);
-					editPanel.add(editSaveButton);
-					editPanel.add(editCancelButton);
-
-					Integer editButtonInteger = Integer.parseInt(accountButton.getName());
-					String savedAccDataString = buttonIdHashMap.get(editButtonInteger);
-					accSiteDataReaderFromHashMap(buttonDataClass, savedAccDataString);
-					String siteNameString = buttonDataClass.getSiteNameString();
-					String userNameString = buttonDataClass.getSiteUserNameString();
-					String sitePasswordString = buttonDataClass.getUserSitePasswordString();
-					editSitetf.setText(siteNameString);
-					editNametf.setText(userNameString);
-					editPasswordtf.setText(sitePasswordString);
-
-					editFrame.getContentPane().add(BorderLayout.CENTER, editPanel);
-					editFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-					editFrame.setTitle("BeSafe");
-					URL iconUrl = getClass().getResource("/BSIcon.png");
-					ImageIcon icon = new ImageIcon(iconUrl);
-					editPanel.setBorder(BorderFactory.createEmptyBorder(15, 5, 15, 5));
-					editFrame.setSize(400, 200);
-					editFrame.setLocationRelativeTo(null);
-					editFrame.setIconImage(icon.getImage());
-					editFrame.setVisible(true);
-					editSaveButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent s) {
-							if (editSitetf.getText().equals(siteNameString)
-									&& editNametf.getText().equals(userNameString)
-									&& editPasswordtf.getText().equals(sitePasswordString)) {
-								editFrame.dispose();
-							} else {
-								String newSiteNameString = editSitetf.getText();
-								String newUserNameString = editNametf.getText();
-								String newSitePasswordString = editPasswordtf.getText();
-								String compientData = "Acc:" + newUserNameString + ":Acc" + "Pw:"
-										+ newSitePasswordString + ":Pw" + "Site:" + newSiteNameString + ":Site";
-								buttonIdHashMap.replace(editButtonInteger, compientData);
-								File file = new File(userDataClass.getUserNameString());
-								if (file.exists() == true) {
-									try {
-										String keyString = new String(
-												Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
-										String pathString = (file + "/Udata" + "/" + "Acc.data");
-										String uDataString = new String(
-												Files.readAllBytes(Paths.get(pathString.toString())));
-										String newEncryptedAccountNameString = encrypt(newUserNameString, keyString);
-										String newEncryptedPwString = encrypt(newSitePasswordString, keyString);
-										String newEncryptedSiteNameString = encrypt(newSiteNameString,
-												keyString + editButtonInteger);
-										String newData = ("[SiteID:" + editButtonInteger + ":SiteID" + "Acc:"
-												+ newEncryptedAccountNameString + ":Acc" + "Pw:" + newEncryptedPwString
-												+ ":Pw" + "Site:" + newEncryptedSiteNameString + ":Site]");
-										String newString = "";
-										Pattern regexPatten = Pattern
-												.compile("\\[SiteID:" + editButtonInteger + "(.*?):Site\\]");
-										Matcher match = regexPatten.matcher(uDataString);
-										while (match.find()) {
-											newString = uDataString.replaceAll(
-													"\\[SiteID:" + editButtonInteger + "(.*?):Site\\]", newData);
-											System.out.println(match.group());
-											System.out.println(newString);
-											break;
-										}
-										FileWriter writer = new FileWriter(pathString);
-										writer.write(newString);
-										writer.close();
-										accountButton.setText(newSiteNameString);
-										editFrame.dispose();
-
-									} catch (Exception e) {
-										editFrame.dispose();
-									}
-								}
-							}
-						}
-					});
-
-					editCancelButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent c) {
-							editFrame.dispose();
-						}
-					});
+					editSavedAccountData(userDataClass, accountButton);
 				} else {
+					//Save Data to the clipboard
 					Integer accButtonNameInteger = Integer.parseInt(accountButton.getName());
 					findingThePasswordForTheAccount(accButtonNameInteger, userDataClass);
 					StringSelection selection = new StringSelection(userDataClass.getUserSitePasswordString());
@@ -365,5 +259,120 @@ public class SiteDataManagementSystem {
 			}
 		}
 
+	}
+	public void saveNewAccountData(UserDataClass userDataClass, JButton accountButton,
+			JFrame editFrame, JTextField editSitetf, JTextField editNametf,
+			JTextField editPasswordtf, Integer editButtonInteger) {
+		String newSiteNameString = editSitetf.getText();
+		String newUserNameString = editNametf.getText();
+		String newSitePasswordString = editPasswordtf.getText();
+		String compientData = "Acc:" + newUserNameString + ":Acc" + "Pw:"
+				+ newSitePasswordString + ":Pw" + "Site:" + newSiteNameString + ":Site";
+		buttonIdHashMap.replace(editButtonInteger, compientData);
+		File file = new File(userDataClass.getUserNameString());
+		if (file.exists() == true) {
+			try {
+				String keyString = new String(
+						Files.readAllBytes(Paths.get(file.toString(), "/data.txt")));
+				String pathString = (file + "/Udata" + "/" + "Acc.data");
+				String uDataString = new String(
+						Files.readAllBytes(Paths.get(pathString.toString())));
+				String newEncryptedAccountNameString = encrypt(newUserNameString, keyString);
+				String newEncryptedPwString = encrypt(newSitePasswordString, keyString);
+				String newEncryptedSiteNameString = encrypt(newSiteNameString,
+						keyString + editButtonInteger);
+				String newData = ("[SiteID:" + editButtonInteger + ":SiteID" + "Acc:"
+						+ newEncryptedAccountNameString + ":Acc" + "Pw:" + newEncryptedPwString
+						+ ":Pw" + "Site:" + newEncryptedSiteNameString + ":Site]");
+				String newString = "";
+				Pattern regexPatten = Pattern
+						.compile("\\[SiteID:" + editButtonInteger + "(.*?):Site\\]");
+				Matcher match = regexPatten.matcher(uDataString);
+				while (match.find()) {
+					newString = uDataString.replaceAll(
+							"\\[SiteID:" + editButtonInteger + "(.*?):Site\\]", newData);
+					System.out.println(match.group());
+					System.out.println(newString);
+					break;
+				}
+				FileWriter writer = new FileWriter(pathString);
+				writer.write(newString);
+				writer.close();
+				accountButton.setText(newSiteNameString);
+				editFrame.dispose();
+
+			} catch (Exception e) {
+				editFrame.dispose();
+			}
+		}
+	}
+	public void editSavedAccountData(UserDataClass userDataClass, JButton accountButton) {
+		UserDataClass buttonDataClass = new UserDataClass();
+
+		JPanel editPanel = new JPanel();
+		JFrame editFrame = new JFrame();
+
+		JLabel editSiteLabel = new JLabel("Site: ");
+		JLabel editNameLabel = new JLabel("Accountname: ");
+		JLabel editPasswordLabel = new JLabel("Accountpassword: ");
+
+		JTextField editSitetf = new JTextField(20);
+		JTextField editNametf = new JTextField(20);
+		JTextField editPasswordtf = new JTextField(20);
+
+		JButton editSaveButton = new JButton("Save");
+		JButton editCancelButton = new JButton("Cancel");
+
+		GridLayout editGridLayout = new GridLayout(4, 2);
+
+		editPanel.setLayout(editGridLayout);
+		editPanel.add(editSiteLabel);
+		editPanel.add(editSitetf);
+		editPanel.add(editNameLabel);
+		editPanel.add(editNametf);
+		editPanel.add(editPasswordLabel);
+		editPanel.add(editPasswordtf);
+		editPanel.add(editSaveButton);
+		editPanel.add(editCancelButton);
+
+		Integer editButtonInteger = Integer.parseInt(accountButton.getName());
+		String savedAccDataString = buttonIdHashMap.get(editButtonInteger);
+		accSiteDataReaderFromHashMap(buttonDataClass, savedAccDataString);
+		String siteNameString = buttonDataClass.getSiteNameString();
+		String userNameString = buttonDataClass.getSiteUserNameString();
+		String sitePasswordString = buttonDataClass.getUserSitePasswordString();
+		editSitetf.setText(siteNameString);
+		editNametf.setText(userNameString);
+		editPasswordtf.setText(sitePasswordString);
+
+		editFrame.getContentPane().add(BorderLayout.CENTER, editPanel);
+		editFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		editFrame.setTitle("BeSafe");
+		URL iconUrl = getClass().getResource("/BSIcon.png");
+		ImageIcon icon = new ImageIcon(iconUrl);
+		editPanel.setBorder(BorderFactory.createEmptyBorder(15, 5, 15, 5));
+		editFrame.setSize(400, 200);
+		editFrame.setLocationRelativeTo(null);
+		editFrame.setIconImage(icon.getImage());
+		editFrame.setVisible(true);
+		editSaveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent s) {
+				if (editSitetf.getText().equals(siteNameString)
+						&& editNametf.getText().equals(userNameString)
+						&& editPasswordtf.getText().equals(sitePasswordString)) {
+					editFrame.dispose();
+				} else {
+					saveNewAccountData(userDataClass, accountButton, editFrame,
+							editSitetf, editNametf,	editPasswordtf, editButtonInteger);
+				}
+			}
+		});
+		editCancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent c) {
+				editFrame.dispose();
+			}
+		});
 	}
 }
